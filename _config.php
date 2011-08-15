@@ -5,9 +5,9 @@
  **/
 
 
-
 //copy the lines between the START AND END line to your /mysite/_config.php file and choose the right settings
-//===================---------------- START ssos MODULE ----------------===================
-//===================---------------- END ssos MODULE ----------------===================
+//===================---------------- START ecommerce_software MODULE ----------------===================
+//Object::add_extension('Member', 'SoftwareAuthorMemberDOD');
+//===================---------------- END ecommerce_software MODULE ----------------===================
 
 

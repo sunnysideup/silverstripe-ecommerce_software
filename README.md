@@ -10,6 +10,8 @@ Nicolaas Francken [at] sunnysideup.co.nz
 Requirements
 -----------------------------------------------
 SilverStripe 2.4+
+ecommerce
+ecommerce_product_tags
 
 
 Installation Instructions
