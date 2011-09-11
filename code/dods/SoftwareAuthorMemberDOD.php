@@ -5,7 +5,7 @@
  *
  *
  *
- **/ 
+ **/
 
 
 class SoftwareAuthorMemberDOD extends DataObjectDecorator {
@@ -34,7 +34,7 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 			$js = '
 				jQuery(document).ready(
 					function() {
-						jQuery("#AreYouHappyForPeopleToContactYou input").live("change", 
+						jQuery("#AreYouHappyForPeopleToContactYou input").live("change",
 							function(){
 								if(jQuery("#AreYouHappyForPeopleToContactYou input").is(":checked")) {
 									jQuery("#ContactDetailURL").slideDown();
@@ -64,19 +64,19 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 	}
 
 	function onBeforeWrite() {
-		if($this->AreYouHappyForPeopleToContactYou) {
-			if(!$this->AreYouHappyForPeopleToContactYou) {
-				$this->Rate15Mins = 0;
-				$this->Rate120Mins = 0;
-				$this->Rate480Mins = 0;
+		if($this->owner->AreYouHappyForPeopleToContactYou) {
+			if(!$this->owner->AreYouHappyForPeopleToContactYou) {
+				$this->owner->Rate15Mins = 0;
+				$this->owner->Rate120Mins = 0;
+				$this->owner->Rate480Mins = 0;
 			}
 		}
 		else {
-			$this->ContactDetailURL = '';
-			$this->AreYouAvailableForPaidSupport = FALSE;
-			$this->Rate15Mins = 0;
-			$this->Rate120Mins = 0;
-			$this->Rate480Mins = 0;
+			$this->owner->ContactDetailURL = '';
+			$this->owner->AreYouAvailableForPaidSupport = FALSE;
+			$this->owner->Rate15Mins = 0;
+			$this->owner->Rate120Mins = 0;
+			$this->owner->Rate480Mins = 0;
 		}
 	}
 
