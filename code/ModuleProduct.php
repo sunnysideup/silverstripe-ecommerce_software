@@ -5,7 +5,7 @@
  *
  *
  *
- **/ 
+ **/
 
 
 class ModuleProduct extends Product {
@@ -22,7 +22,7 @@ class ModuleProduct extends Product {
 		"Author" => "Member"
 	);
 
-	
+
 	function getCMSFields(){
 		$fields = parent::getCMSFields();
 		$fields->addFieldToTab('Root.Content.Software', new TextField('Code','Code (folder name)'));
@@ -31,7 +31,7 @@ class ModuleProduct extends Product {
 		$fields->addFieldToTab('Root.Content.Software', new DropdownField('AuthorID','Author', DataObject::get("Member")->toDropdownMap('ID', 'Title')));
 		return $fields;
 	}
-	
+
 
 }
 
@@ -39,13 +39,5 @@ class ModuleProduct extends Product {
 class ModuleProduct_Controller extends Product_Controller {
 
 
-	function Form () {
-		$id = 0;
-		$memberID = Member::currentUserID();
-		if($memberID && $memberID == $this->AuthorID) {
-			$id = $this->ID;
-		}
-		return new AddingModuleProduct_Form($this, "Form", $id);
-	}
 
 }
