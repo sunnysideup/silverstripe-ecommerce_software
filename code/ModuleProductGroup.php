@@ -5,7 +5,7 @@
  *
  *
  *
- **/ 
+ **/
 
 
 class ModuleProductGroup extends ProductGroup {
@@ -19,9 +19,5 @@ class ModuleProductGroup extends ProductGroup {
 
 class ModuleProductGroup_Controller extends ProductGroup_Controller {
 
-
-	function Form () {
-		return new AddingModuleProduct_Form($this, "Form", 0);
-	}
 
 }
