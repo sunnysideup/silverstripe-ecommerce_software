@@ -31,36 +31,7 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 		$field = $fields->fieldByName("Rate15Mins"); $field->setTitle("If applicable, how much do you charge (in $currency) for a fifteen minute skype chat?");
 		$field = $fields->fieldByName("Rate120Mins"); $field->setTitle("If applicable, how much do you charge (in $currency) for a two hour support block?");
 		$field = $fields->fieldByName("Rate480Mins"); $field->setTitle("If applicable, how much do you charge (in $currency) for a development day (eight hours)?");
-			$js = '
-				jQuery(document).ready(
-					function() {
-						jQuery("#AreYouHappyForPeopleToContactYou input").live("change",
-							function(){
-								if(jQuery("#AreYouHappyForPeopleToContactYou input").is(":checked")) {
-									jQuery("#ContactDetailURL").slideDown();
-									jQuery("#AreYouAvailableForPaidSupport").show();
-								}
-								else {
-									jQuery("#ContactDetailURL, #AreYouAvailableForPaidSupport, #Rate15Mins, #Rate120Mins, #Rate480Mins").slideUp();
-								}
-							}
-						);
-						jQuery("#AreYouAvailableForPaidSupport input").live("change",
-							function(){
-								if(jQuery("#AreYouAvailableForPaidSupport input").is(":checked")) {
-									jQuery("#Rate15Mins, #Rate120Mins, #Rate480Mins").slideDown();
-								}
-								else {
-									jQuery("#Rate15Mins, #Rate120Mins, #Rate480Mins").slideUp();
-								}
-							}
-						);
-						jQuery("#AreYouHappyForPeopleToContactYou input").change();
-						jQuery("#AreYouAvailableForPaidSupport input").change();
-					}
-				);
-			';
-		Requirements::customScript($js, "SoftwareAuthorMemberDOD");
+		Requirements::javascript("ecommerce_software/javascript/SoftwareAuthorMemberDOD.js");
 	}
 
 	function onBeforeWrite() {
