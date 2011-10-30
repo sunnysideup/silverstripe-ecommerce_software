@@ -14,8 +14,12 @@ class ModuleProduct extends Product {
 
 	public static $db = array(
 		"Code" => "Varchar",
-		"MainURL" => "Varchar(255)",
-		"RepositoryURL" => "Varchar(255)"
+		"AuthorName" => "Varchar",
+		"AuthorURI" => "Varchar",
+		"RepoType" => "Varchar",
+		"RepoURI" => "Varchar(255)",
+		"InfoURI" => "Text",
+		"ImportID" => "Int"
 	);
 
 	public static $has_one = array(
