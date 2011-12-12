@@ -3,11 +3,11 @@ jQuery(document).ready(
 		jQuery("#AreYouHappyForPeopleToContactYou input").live("change",
 			function(){
 				if(jQuery("#AreYouHappyForPeopleToContactYou input").is(":checked")) {
-					jQuery("#ContactDetailURL").slideDown();
+					jQuery("#ContactDetailURL, #OtherURL").slideDown();
 					jQuery("#AreYouAvailableForPaidSupport").show();
 				}
 				else {
-					jQuery("#ContactDetailURL").slideUp();
+					jQuery("#ContactDetailURL, #OtherURL").slideUp();
 					jQuery("#AreYouAvailableForPaidSupport input").attr("checked", "").change();
 					jQuery("#AreYouAvailableForPaidSupport").hide();
 				}
