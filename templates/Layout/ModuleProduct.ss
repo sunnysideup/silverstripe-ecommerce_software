@@ -8,11 +8,7 @@
 	<% if MetaDescription %><p id="MetaDescriptionHolder">$MetaDescription</p><% end_if %>
 
 	<div class="productDetails">
-		<div class="productImage">
-<% if Image.ContentImage %>
-			<img class="realImage" src="$Image.ContentImage.URL" alt="<% sprintf(_t("Product.IMAGE","%s image"),$Title) %>" />
-<% end_if %>
-		</div>
+<% include ProductImage %>
 <% include ProductActions %>
 	</div>
 
