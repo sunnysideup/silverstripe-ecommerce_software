@@ -38,8 +38,13 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 		);
 	}
 
-	function updateMemberFormFields(&$fields) {
+	function Currency() {
 		$currency = Payment::site_currency();
+		return $currency;
+	}
+
+	function updateMemberFormFields(&$fields) {
+		$currency = $this->Currency();
 		$field = $fields->fieldByName("ScreenName"); $field->setTitle("Screen Name / Alias");
 		$field = $fields->fieldByName("GithubURL"); $field->setTitle("Github URL - e.g. https://github.com/mynamehere");
 		$field = $fields->fieldByName("SilverstripeDotOrgURL"); $field->setTitle("www.silverstripe.org URL - e.g. http://www.silverstripe.org/ForumMemberProfile/show/1");
