@@ -1,12 +1,11 @@
 <?php
 
 /**
- *
- *
+ * extends Member with fields specific to the Software Author
+ * @author nicolaas [at] sunnysideup.co.nz
  *
  *
  **/
-
 
 class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 
@@ -38,6 +37,10 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 		);
 	}
 
+	/**
+	 * Returns the currency used on the site.
+	 * @return String
+	 */
 	function Currency() {
 		$currency = Payment::site_currency();
 		return $currency;
