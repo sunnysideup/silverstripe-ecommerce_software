@@ -23,6 +23,32 @@ class ModuleProduct extends Product {
 		"ImportID" => "Int"
 	);
 
+	public static $api_access = array(
+		'view' => array(
+				"ModuleTitle",
+				"Code",
+				"MainURL",
+				"ReadMeURL",
+				"DemoURL",
+				"SvnURL",
+				"GitURL",
+				"OtherURL",
+				"EcommerceProductTags",
+				"Authors"
+			)
+	 );
+
+	public static $casting = array(
+		"ModuleTitle" => "Varchar"
+	);
+
+
+	function ModuleTitle(){return $this->getModuleTitle();}
+	function getModuleTitle() {
+		return $this->getField("MenuTitle");
+	}
+
+
 	public static $many_many = array(
 		"Authors" => "Member"
 	);

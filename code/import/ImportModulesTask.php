@@ -145,7 +145,9 @@ class ImportModulesTask extends BuildTask{
 							$page->ImportID = $ImportID;
 							$page->Title = $Title;
 							$page->MetaTitle = $Title;
+							$page->MenuTitle = $Title;
 							$page->Code = $Code;
+							$page->InternalItemID = $Code;
 							$page->URLSegment = $Code;
 
 							$page->MainURL = $MainURL;

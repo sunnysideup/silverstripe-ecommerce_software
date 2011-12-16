@@ -33,7 +33,10 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 				"Rate120Mins" => 0,
 				"Rate480Mins" => 0
 			),
-
+			'api_access' => array(
+				"view" =>
+					array("ModuleProducts", "ScreenName")
+				)
 		);
 	}
 
