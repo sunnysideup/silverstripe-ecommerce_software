@@ -3,3 +3,13 @@ li.infoItem.moduleList {margin-top: 0.7em; margin-bottom: 0.7em;}
 li.infoItem span { }
 li.infoItem span.label {font-weight: bold;}
 li.infoItem span.value {}
+
+
+/* group */
+.moreInfoLink {font-weight: bold;}
+.explanation {font-size: 0.77em;}
+.tags {font-size: 0.77em;}
+.tags .current, #SidebarModuleProductGroupTags a.current {font-size: 1.23em; color: #317010;}
+.loading form input.text{background-image: url("/ecommerce/images/loading.gif");background-position: bottom right; background-repeat: no-repeat;}
+.loading form input.action{display: none;}
+.notReadyToSearch {color: #ccc;}

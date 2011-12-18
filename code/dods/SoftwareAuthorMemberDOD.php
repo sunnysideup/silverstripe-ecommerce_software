@@ -67,7 +67,19 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 	}
 
 
-
+	public function onBeforeWrite(){
+		$id = intval($this->owner->ID);
+		if(!$id) {
+			$id = 0;
+		}
+		$i = 0;
+		$startScreenName = $this->owner->ScreenName;
+		$this->owner->ScreenName = ereg_replace("[^A-Za-z0-9]", "", $this->owner->ScreenName);
+		while(DataObject::get_one($this->owner->ClassName, "\"ScreenName\" = '".$this->owner->ScreenName."' AND \"".$this->owner->ClassName."\".\"ID\" <> ".$id) && $i < 10) {
+			$i++;
+			$this->ScreenName = $startScreenName."_".$i;
+		}
+	}
 }
 
 

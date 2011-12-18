@@ -89,6 +89,7 @@ class ModuleProduct extends Product {
 			$sourceJoin = ""
 		);
 		$fields->addFieldToTab('Root.Content.Software', new TextField('Code','Code (this should be the same as the recommended folder name)'));
+		$fields->addFieldToTab('Root.Content.Software', new TextareaField('MetaDescription','Three sentence introduction', 3));
 		$fields->addFieldToTab('Root.Content.Software', new TextField('MainURL','Link to home page for the module - e.g. http://www.mymodule.com/'));
 		$fields->addFieldToTab('Root.Content.Software', new TextField('ReadMeURL','Link to read me file - e.g. http://www.mymodule.com/readme.md'));
 		$fields->addFieldToTab('Root.Content.Software', new TextField('DemoURL','Link to a demo - e.g. http://demo.mymodule.com/'));
@@ -102,6 +103,9 @@ class ModuleProduct extends Product {
 		return $fields;
 	}
 
+	function onBeforeWrite(){
+
+	}
 
 
 }

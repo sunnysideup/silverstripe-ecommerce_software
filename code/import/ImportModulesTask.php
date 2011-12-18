@@ -124,28 +124,36 @@ class ImportModulesTask extends BuildTask{
 							DB::query("DELETE FROM \"EcommerceProductTag_Products\" WHERE ProductID = ".$page->ID);
 						}
 						if($Title && $Code) {
+							$member = null;
 							//member
-							$member = DataObject::get_one("Member", "ScreenName = '$ScreenName'");
+							$member = DataObject::get_one("Member", "\"ScreenName\" = '$ScreenName'");
 							if($member){
 								DB::query("DELETE FROM \"ModuleProduct_Authors\" WHERE MemberID = ".$member->ID);
 							}
 							else {
 								$member = new Member();
 							}
-							$member->ScreenName = $ScreenName;
-							$member->Email = $Email;
-							$member->GithubURL = $GithubURL;
-							$member->SilverstripeDotOrgURL = $SilverstripeDotOrgURL;
-							$member->CompanyName = $CompanyName;
-							$member->CompanyURL = $CompanyURL;
-							$member->write();
-							$member->Groups()->add($group);
+							if($ScreenName) {
+								$member->ScreenName = $ScreenName;
+								$member->Email = $Email;
+								$member->GithubURL = $GithubURL;
+								$member->SilverstripeDotOrgURL = $SilverstripeDotOrgURL;
+								$member->CompanyName = $CompanyName;
+								$member->CompanyURL = $CompanyURL;
+								$member->write();
+								$member->Groups()->add($group);
+							}
+							else {
+								DB::alteration_message("no screen name provided for <b>$Title</b>", "deleted");
+							}
 							//page
 							$page->ParentID = $parentID;
+							$page->ShorInSearch = 1;
 							$page->ImportID = $ImportID;
 							$page->Title = $Title;
 							$page->MetaTitle = $Title;
 							$page->MenuTitle = $Title;
+							$page->MetaDescription = strip_tags($Description);
 							$page->Code = $Code;
 							$page->InternalItemID = $Code;
 							$page->URLSegment = $Code;
@@ -156,7 +164,7 @@ class ImportModulesTask extends BuildTask{
 							$page->SvnURL = $SvnURL;
 							$page->GitURL = $GitURL;
 							$page->OtherURL = $OtherURL;
-							$page->Content = "<p>".strip_tags($Description)."</p>";
+
 							$page->writeToStage('Stage');
 							$page->Publish('Stage', 'Live');
 							$page->Status = "Published";
@@ -165,7 +173,10 @@ class ImportModulesTask extends BuildTask{
 								foreach($tagsArray as $tag) {
 									$tag = Convert::raw2sql(trim($tag));
 									if($tag) {
-										$tagObject = DataObject::get_one("EcommerceProductTag", "Title = '$tag'");
+										$tagObject = DataObject::get_one("EcommerceProductTag", "\"Title\" = '$tag'");
+										if(!$tagObject) {
+											$tagObject = DataObject::get_one("EcommerceProductTag", "\"Synonyms\" LIKE '%$tag%'");
+										}
 										if(!$tagObject) {
 											$tagObject = new EcommerceProductTag();
 											$tagObject->Title = $tag;
@@ -176,8 +187,10 @@ class ImportModulesTask extends BuildTask{
 									}
 								}
 							}
-							$existingAuthors = $page->Authors();
-							$existingAuthors->add($member);
+							if($member) {
+								$existingAuthors = $page->Authors();
+								$existingAuthors->add($member);
+							}
 							if($new === true) {
 								DB::alteration_message("added <b>$Title</b>", "created");
 							}
