@@ -103,9 +103,6 @@ class ModuleProduct extends Product {
 		return $fields;
 	}
 
-	function onBeforeWrite(){
-
-	}
 
 
 }
