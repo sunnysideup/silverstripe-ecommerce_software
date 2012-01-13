@@ -150,9 +150,11 @@ class ImportModulesTask extends BuildTask{
 								DB::alteration_message("no screen name provided for <b>$Title</b>", "deleted");
 							}
 							//page
-							$page->ParentID = $parentID;
-							$page->ShorInSearch = 1;
 							$page->ImportID = $ImportID;
+
+							$page->ParentID = $parentID;
+							$page->ShowInSearch = 1;
+							$page->ShowInMenus = 1;
 							$page->Title = $Title;
 							$page->MetaTitle = $Title;
 							$page->MenuTitle = $Title;
@@ -160,6 +162,7 @@ class ImportModulesTask extends BuildTask{
 							$page->Code = $Code;
 							$page->InternalItemID = $Code;
 							$page->URLSegment = $Code;
+							$page->ProvideComments = true;
 
 							$page->MainURL = $MainURL;
 							$page->ReadMeURL = $ReadMeURL;

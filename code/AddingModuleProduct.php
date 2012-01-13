@@ -63,7 +63,7 @@ class AddingModuleProduct_Form extends Form  {
 		else {
 			$types = array();
 		}
-		$fields->push(new DropdownField('ParentID','Type', $types, $controller->dataRecord->ID));
+		//$fields->push(new DropdownField('ParentID','Type', $types, $controller->dataRecord->ID));
 		$fields->push(new TextField('Title','Title'));
 		$fields->push(new TextareaField('MetaDescription','Three sentence Introduction', 3));
 		$fields->push(new HTMLEditorField('Content','Long Description', 3));
