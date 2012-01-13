@@ -135,6 +135,11 @@ ModuleProductGroup = {
 			jQuery(".productList > li."+tag+" a[rel='"+tag+"'], #SidebarModuleProductGroupTags a[rel='"+tag+"']").addClass("current");
 			jQuery("#SidebarModuleProductGroupTags li.showAll").show();
 		}
+		this.scrollTo("Products");
+	},
+
+	scrollTo: function(id){
+		jQuery('html,body').animate({scrollTop: jQuery("#"+id).offset().top},'slow');
 	}
 
 

@@ -133,10 +133,7 @@ class ImportModulesTask extends BuildTask{
 									$member = DataObject::get_one('Member', " \"$identifierField\" = '$Email'");
 								}
 							}
-							if($member){
-								DB::query("DELETE FROM \"ModuleProduct_Authors\" WHERE MemberID = ".$member->ID);
-							}
-							else {
+							if(!$member){
 								$member = new Member();
 							}
 							if($ScreenName) {
@@ -194,8 +191,12 @@ class ImportModulesTask extends BuildTask{
 								}
 							}
 							if($member) {
+								DB::query("DELETE FROM \"ModuleProduct_Authors\" WHERE ModuleProductID = ".$page->ID." AND MemberID <> ".$member->ID );
 								$existingAuthors = $page->Authors();
 								$existingAuthors->add($member);
+							}
+							else {
+								DB::alteration_message("no member for  <b>$Title</b>", "deleted");
 							}
 							if($new === true) {
 								DB::alteration_message("added <b>$Title</b>", "created");

@@ -16,13 +16,13 @@
 		<ul class="productList">
 			<% control Products %>
 			<li class="<% if Authors %> <% control Authors %> author$ScreenName <% end_control %><% end_if %><% if EcommerceProductTags %> <% control EcommerceProductTags %> filter$Code <% end_control %><% end_if %>" id="ModuleProductID{$ID}">
-				<a href="$Link" class="moreInfoLink" rel="Explanation$ID">$Title</a>
-				($Code)
+				<a href="$Link" class="moreInfoLink" rel="Explanation$ID" title="code: $Code.ATT">$Title</a>
 				<% if EcommerceProductTags %><span class="tags">
+					<span class="tagHeading listItemHeading" title="Tag(s)">Tag(s)</span>
 					<% control EcommerceProductTags %><a href="$Link" rel="filter$Code">$Title</a><% if Last %>.<% else %>, <% end_if %><% end_control %>
 				</span><% end_if %>
 				<% if Authors %><span class="authors tags">
-					Author(s): <% control Authors %><a href="#" rel="author$ScreenName">$ScreenName</a><% if Last %>.<% else %>, <% end_if %><% end_control %>
+					<span class="authorHeading listItemHeading" title="Author(s)">Author:</span> <% control Authors %><a href="#" rel="author$ScreenName">$ScreenName</a><% if Last %>.<% else %>, <% end_if %><% end_control %>
 				</span><% end_if %>
 				<div class="explanation" id="Explanation$ID">
 					<p>$MetaDescription</p>

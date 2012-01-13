@@ -14,3 +14,6 @@ li.infoItem span.value {}
 .loading form input.action{display: none;}
 .notReadyToSearch {color: #ccc;}
 #Quantity {display: none;}
+
+.authorHeading{width: 16px; height: 16px; display: inline-block; background-image: url(/ecommerce_software/images/author.png); text-indent: -3000px; }
+.tagHeading{width: 16px; height: 16px; display: inline-block; background-image: url(/ecommerce_software/images/tag.png); text-indent: -3000px; }
