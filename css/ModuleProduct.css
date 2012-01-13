@@ -13,3 +13,4 @@ li.infoItem span.value {}
 .loading form input.text{background-image: url("/ecommerce/images/loading.gif");background-position: bottom right; background-repeat: no-repeat;}
 .loading form input.action{display: none;}
 .notReadyToSearch {color: #ccc;}
+#Quantity {display: none;}
