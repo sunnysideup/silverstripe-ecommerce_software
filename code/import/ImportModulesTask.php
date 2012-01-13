@@ -134,11 +134,13 @@ class ImportModulesTask extends BuildTask{
 								$member = DataObject::get_one('Member', " \"$identifierField\" = '$Email'");
 							}
 							$i = 0;
-							while($replaceMember = DataObject::get_one('Member', " \"$identifierField\" = '$Email' AND \"Member\".\"ID\" <> ".$member->ID)) {
-								if($replaceMember) {
-									$i++;
-									$member = $replaceMember;
-									$Email = $Email."_DOUBLE_$i";
+							if($member) {
+								while($replaceMember = DataObject::get_one('Member', " \"$identifierField\" = '$Email' AND \"Member\".\"ID\" <> ".$member->ID)) {
+									if($replaceMember) {
+										$i++;
+										$member = $replaceMember;
+										$Email = $Email."_DOUBLE_$i";
+									}
 								}
 							}
 							if(!$member){
