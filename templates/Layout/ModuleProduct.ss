@@ -14,13 +14,13 @@
 
 	<% if ReadMeContent %>
 	<div id="ReadMeHolder">
-		<h3>Read Me Content</h3>
+		<h3  class="moduleH3">Read Me Content</h3>
 		<pre>$ReadMeContent</pre>
 		<p class="source">Source: <a href="$ReadMeURL.URL">$ReadMeURL</a></p>
 	</div>
 	<% end_if %>
 
-	<h3>Author(s)</h3>
+	<h3  class="moduleH3">Author(s)</h3>
 	<ul id="AuthorList"  class="moduleList">
 	<% control Authors %>
 		<li class="infoItem $FirstLast">
@@ -32,7 +32,7 @@
 			<% if SilverstripeDotOrgURL %>, <a href="$SilverstripeDotOrgURL.URL">Silverstripe.org profile</a><% end_if %>
 
 			<% if AreYouHappyForPeopleToContactYou %>
-				<h3>Contact Details</h3>
+				<h3  class="moduleH3">Contact Details</h3>
 				<ul>
 					<% if ContactDetailURL %><li><a href="$ContactDetailURL.URL">Contact details</a></li><% end_if %>
 					<% if OtherURL %><li><a href="$OtherURL.URL">More information</a></li><% end_if %>
@@ -55,7 +55,7 @@
 	<% end_control %>
 	</ul>
 
-	<h3>Links</h3>
+	<h3  class="moduleH3">Links</h3>
 	<ul id="ModuleProductLinksList" class="moduleList">
 	<% if MainURL %><li class="infoItem"><span class="label">Home page:</span> <span class="value"><a href="$MainURL.URL">$MainURL</a></span></li><% end_if %>
 	<% if ReadMeURL %><li class="infoItem"><span class="label">README file:</span> <span class="value"><a href="$ReadMeURL.URL">$ReadMeURL</a></span></li><% end_if %>
@@ -65,7 +65,7 @@
 	<% if OtherURL %><li class="infoItem"><span class="label">Other repository or downloads:</span> <span class="value"><a href="$OtherURL.URL">$OtherURL</a></span></li><% end_if %>
 	</ul>
 
-	<% if Code %><h3>Code</h3><ul id="CodeHolderList" class="moduleList"><li class="infoItem first last"><span class="label">Code (folder name):</span> <span class="value">$Code</span></li></ul><% end_if %>
+	<% if Code %><h3 class="moduleH3">Code</h3><ul id="CodeHolderList" class="moduleList"><li class="infoItem first last"><span class="label">Code (folder name):</span> <span class="value">$Code</span></li></ul><% end_if %>
 
 	<% include OtherProductInfo %>
 
