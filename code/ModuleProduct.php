@@ -148,4 +148,43 @@ class ModuleProduct_Controller extends Product_Controller {
 		return $connectable;
 	}
 
+
+	/**
+	 *
+	 * @return Object Product
+	 */
+	function PreviousProduct(){
+		$products = DataObject::get("ModuleProduct", "\"Sort\" < ".$this->Sort." AND ParentID = ".$this->ParentID, "\"Sort\" DESC", "", 1);
+		if($products) {
+			foreach($products as $product) {
+				return $product;
+			}
+		}
+	}
+
+	/**
+	 *
+	 * @return Object Product
+	 */
+	function NextProduct(){
+		$products = DataObject::get("ModuleProduct", "\"Sort\" > ".$this->Sort." AND ParentID = ".$this->ParentID, "\"Sort\" ASC", "", 1);
+		if($products) {
+			foreach($products as $product) {
+				return $product;
+			}
+		}
+	}
+
+
+	function HasPreviousOrNextProduct(){
+		if($this->NextProduct()) {
+			return true;
+		}
+		if($this->PreviousProduct()) {
+			return true;
+		}
+		return true;
+	}
+
+
 }
