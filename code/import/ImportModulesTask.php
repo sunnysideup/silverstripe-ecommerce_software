@@ -99,7 +99,7 @@ class ImportModulesTask extends BuildTask{
 					$ImportID = intval($row["ImportID"]);
 					if($ImportID) {
 						$ScreenName = Convert::raw2sql($row["ScreenName"]);
-						$Email = Convert::raw2sql($row["ScreenName"]);
+						$Email = Convert::raw2sql($row["Email"]);
 						$GithubURL = Convert::raw2sql($row["GithubURL"]);
 						$SilverstripeDotOrgURL = Convert::raw2sql($row["SilverstripeDotOrgURL"]);
 						$CompanyName = Convert::raw2sql($row["CompanyName"]);
