@@ -12,10 +12,13 @@
 <% include ProductActions %>
 	</div>
 
-	<% if Code %><h3>Main Details</h3><ul id="CodeHolderList" class="moduleList"><li class="infoItem first last"><span class="label">Code (folder name):</span> <span class="value">$Code</span></li></ul><% end_if %>
-
-	<h3>Description</h3>
-	<% if Content %><div id="ContentHolder">$Content</div><% end_if %>
+	<% if ReadMeContent %>
+	<div id="ReadMeHolder">
+		<h3>Read Me Content</h3>
+		<pre>$ReadMeContent</pre>
+		<p class="source">Source: <a href="$ReadMeURL.URL">$ReadMeURL</a></p>
+	</div>
+	<% end_if %>
 
 	<h3>Author(s)</h3>
 	<ul id="AuthorList"  class="moduleList">
@@ -55,12 +58,14 @@
 	<h3>Links</h3>
 	<ul id="ModuleProductLinksList" class="moduleList">
 	<% if MainURL %><li class="infoItem"><span class="label">Home page:</span> <span class="value"><a href="$MainURL.URL">$MainURL</a></span></li><% end_if %>
-	<% if ReadMeURL %><li class="infoItem"><span class="label">READ ME file:</span> <span class="value"><a href="$ReadMeURL.URL">$ReadMeURL</a></span></li><% end_if %>
+	<% if ReadMeURL %><li class="infoItem"><span class="label">README file:</span> <span class="value"><a href="$ReadMeURL.URL">$ReadMeURL</a></span></li><% end_if %>
 	<% if DemoURL %><li class="infoItem"><span class="label">Demo:</span> <span class="value"><a href="$DemoURL.URL">$DemoURL</a></span></li><% end_if %>
 	<% if SvnURL %><li class="infoItem"><span class="label">SVN:</span> <span class="value"><a href="$SvnURL.URL">$SvnURL</a></span></li><% end_if %>
 	<% if GitURL %><li class="infoItem"><span class="label">GIT:</span> <span class="value"><a href="$GitURL.URL">$GitURL</a></span></li><% end_if %>
 	<% if OtherURL %><li class="infoItem"><span class="label">Other repository or downloads:</span> <span class="value"><a href="$OtherURL.URL">$OtherURL</a></span></li><% end_if %>
 	</ul>
+
+	<% if Code %><h3>Code</h3><ul id="CodeHolderList" class="moduleList"><li class="infoItem first last"><span class="label">Code (folder name):</span> <span class="value">$Code</span></li></ul><% end_if %>
 
 	<% include OtherProductInfo %>
 
