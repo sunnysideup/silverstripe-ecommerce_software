@@ -20,4 +20,4 @@ li.infoItem span.value {}
 
 p.source {font-size: 50%; margin-top: 0px; padding-top:0px; margin-bottom: 1em; }
 
-h3.moduleH3 {padding-top: 1.3em!important;}
+h3.moduleH3, #EcommerceProductTags h3 {padding-top: 1.3em!important;margin-top:0!important;}
