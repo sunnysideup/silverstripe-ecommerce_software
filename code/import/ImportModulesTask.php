@@ -153,6 +153,9 @@ class ImportModulesTask extends BuildTask{
 								$member->SilverstripeDotOrgURL = $SilverstripeDotOrgURL;
 								$member->CompanyName = $CompanyName;
 								$member->CompanyURL = $CompanyURL;
+								if(!$member->Password) {
+									$member->Password = Member::create_new_password();
+								}
 								$member->write();
 								$member->Groups()->add($group);
 							}
