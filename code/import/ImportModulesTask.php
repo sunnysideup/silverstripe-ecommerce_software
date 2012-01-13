@@ -128,6 +128,10 @@ class ImportModulesTask extends BuildTask{
 							//member
 							if($ScreenName) {
 								$member = DataObject::get_one("Member", "\"ScreenName\" = '$ScreenName'");
+								$identifierField = Member::get_unique_identifier_field();
+								if(!$member) {
+									$member = DataObject::get_one('Member', " \"$identifierField\" = '$Email'");
+								}
 							}
 							if($member){
 								DB::query("DELETE FROM \"ModuleProduct_Authors\" WHERE MemberID = ".$member->ID);
