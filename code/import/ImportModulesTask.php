@@ -5,8 +5,8 @@
 class ImportModulesTask extends BuildTask{
 
 	static $data_source = "/mysite/data/modules.csv";
-		function get_data_source() {return self::$register_group_title;}
-		function set_data_source($s) {self::$register_group_title = $s;}
+		function get_data_source() {return self::$data_source;}
+		function set_data_source($s) {self::$data_source = $s;}
 
 	static $register_group_title = "Software Authors";
 		function set_register_group_title($s) {self::$register_group_title = $s;}

@@ -67,7 +67,6 @@ class AddingModuleProduct_Form extends Form  {
 		$fields->push(new TextField('Title','Title'));
 		$fields->push(new TextareaField('MetaDescription','Three sentence Introduction', 3));
 		$fields->push(new HTMLEditorField('Content','Long Description', 3));
-		$fields->push(new CheckboxSetField('EcommerceProductTags','Tags', DataObject::get("EcommerceProductTag")));
 		$fields->push(new TextField('AdditionalTags','Additional Keyword(s), comma separated'));
 		$fields->push(new HeaderField('LinkHeader','Links', 4));
 		$fields->push(new TextField('MainURL','Home page'));
@@ -76,7 +75,12 @@ class AddingModuleProduct_Form extends Form  {
 		$fields->push(new TextField('SvnURL','SVN repository - allowing you to checkout trunk or latest version - e.g. http://svn.mymodule.com/svn/trunk/'));
 		$fields->push(new TextField('GitURL','GIT repository - e.g. https://github.com/my-git-username/silverstripe-my-module'));
 		$fields->push(new TextField('OtherURL','Link to other repository or download URL - e.g. http://www.mymodule.com/downloads/'));
-		$fields->push(new HiddenField('AuthorID', Member::currentUserID()));
+		$fields->push(new CheckboxSetField('EcommerceProductTags','Tags', DataObject::get("EcommerceProductTag")));
+		$member = Member::currentMember();
+		if($member->IsAdmin()) {
+			$fields->push(new CheckboxSetField('Authors','Author(s)', DataObject::get("Member")));
+		}
+
 		$actions = new FieldSet(new FormAction("submit", "submit"));
 		$validator = new AddingModuleProduct_RequiredFields($moduleProductID, array('Code', 'Name', 'ParentID', 'MainURL'));
 		parent::__construct($controller, $name, $fields, $actions, $validator);
