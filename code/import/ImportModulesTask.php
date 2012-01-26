@@ -5,8 +5,8 @@
 class ImportModulesTask extends BuildTask{
 
 	static $parent_url_segment = "new-modules";
-		function get_data_source() {return self::$parent_url_segment;}
-		function set_data_source($s) {self::$parent_url_segment = $s;}
+		function get_parent_url_segment() {return self::$parent_url_segment;}
+		function set_parent_url_segment($s) {self::$parent_url_segment = $s;}
 
 	static $data_source = "/mysite/data/modules.csv";
 		function get_data_source() {return self::$data_source;}
