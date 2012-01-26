@@ -78,7 +78,7 @@ class AddingModuleProduct_Form extends Form  {
 		$fields->push(new CheckboxSetField('EcommerceProductTags','Tags', DataObject::get("EcommerceProductTag")));
 		$member = Member::currentMember();
 		if($member->IsAdmin()) {
-			$fields->push(new CheckboxSetField('Authors','Author(s)', DataObject::get("Member")));
+			$fields->push(new CheckboxSetField('Authors','Author(s)', DataObject::get("Member", "Email <> '' AND Email IS NOT NULL")->toDropDownMap('ID','Email')));
 		}
 
 		$actions = new FieldSet(new FormAction("submit", "submit"));
