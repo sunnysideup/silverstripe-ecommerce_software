@@ -31,6 +31,7 @@ class ImportModulesTask extends BuildTask{
 
 
 	function run($request) {
+		return $this->createAuthorGroup();
 		return $this->importmodules();
 		return $this->sortPagesAlphabetically();
 	}
@@ -77,7 +78,19 @@ class ImportModulesTask extends BuildTask{
 		return $fullArray;
 	}
 
-
+	private function createAuthorGroup(){
+		if(!$group = DataObject::get_one("Group", "Code = '".self::$register_group_code."'")) {
+			$group = new Group();
+			$group->Code = self::$register_group_code;
+			$group->Title = self::$register_group_title;
+			$group->write();
+			Permission::grant( $group->ID, self::$register_group_access_key);
+			DB::alteration_message("GROUP: ".self::$register_group_code.' ('.self::$register_group_title.')' ,"created");
+		}
+		elseif(DB::query("SELECT * FROM Permission WHERE GroupID = ".$group->ID." AND Code = '".self::$register_group_access_key."'")->numRecords() == 0) {
+			Permission::grant($group->ID, self::$register_group_access_key);
+		}
+	}
 
 	private function makeModules($rows)  {
 		increase_time_limit_to(600);
@@ -90,17 +103,7 @@ class ImportModulesTask extends BuildTask{
 		else {
 			$parentID = 0;
 		}
-		if(!$group = DataObject::get_one("Group", "Code = '".self::$register_group_code."'")) {
-			$group = new Group();
-			$group->Code = self::$register_group_code;
-			$group->Title = self::$register_group_title;
-			$group->write();
-			Permission::grant( $group->ID, self::$register_group_access_key);
-			DB::alteration_message("GROUP: ".self::$register_group_code.' ('.self::$register_group_title.')' ,"created");
-		}
-		elseif(DB::query("SELECT * FROM Permission WHERE GroupID = ".$group->ID." AND Code = '".self::$register_group_access_key."'")->numRecords() == 0) {
-			Permission::grant($group->ID, self::$register_group_access_key);
-		}
+
 		if($parentID) {
 			if($rows) {
 				foreach($rows as $row) {
@@ -130,114 +133,120 @@ class ImportModulesTask extends BuildTask{
 						}
 						else {
 							$new = false;
-							DB::query("DELETE FROM \"EcommerceProductTag_Products\" WHERE ProductID = ".$page->ID);
 						}
-						if($Title && $Code) {
-							$member = null;
-							//member
-							if($ScreenName) {
-								$member = DataObject::get_one("Member", "\"ScreenName\" = '$ScreenName'");
-							}
-							$identifierField = Member::get_unique_identifier_field();
-							if(!$member) {
-								$member = DataObject::get_one('Member', " \"$identifierField\" = '$Email'");
-							}
-							if($member) {
-								$i = 0;
-								while($replaceMember = DataObject::get_one('Member', " \"$identifierField\" = '$Email' AND \"Member\".\"ID\" <> ".$member->ID)) {
-									if($replaceMember) {
-										$i++;
-										$member = $replaceMember;
-										$Email = $Email."_DOUBLE_$i";
-									}
-								}
-							}
-							if(!$member){
-								$member = new Member();
-							}
-							if($ScreenName) {
-								$member->ScreenName = $ScreenName;
-								$member->Email = $Email;
-								$member->GithubURL = $GithubURL;
-								$member->SilverstripeDotOrgURL = $SilverstripeDotOrgURL;
-								$member->CompanyName = $CompanyName;
-								$member->CompanyURL = $CompanyURL;
-								if(!$member->Password) {
-									$member->Password = Member::create_new_password();
-								}
-								$member->write();
-								$member->Groups()->add($group);
-							}
-							else {
-								DB::alteration_message("no screen name provided for <b>$Title</b>", "deleted");
-							}
-							//page
-							$page->ImportID = $ImportID;
-
-							$page->ParentID = $parentID;
-							$page->ShowInSearch = 1;
-							$page->ShowInMenus = 1;
-							$page->Title = $Title;
-							$page->MetaTitle = $Title;
-							$page->MenuTitle = $Title;
-							$page->MetaDescription = strip_tags($Description);
-							$page->Code = $Code;
-							$page->InternalItemID = $Code;
-							$page->URLSegment = $Code;
-							$page->ProvideComments = true;
-
-							$page->MainURL = $MainURL;
-							$page->ReadMeURL = $ReadMeURL;
-							$page->DemoURL= $DemoURL;
-							$page->SvnURL = $SvnURL;
-							$page->GitURL = $GitURL;
-							$page->OtherURL = $OtherURL;
-
-							$page->writeToStage('Stage');
-							$page->Publish('Stage', 'Live');
-							$page->Status = "Published";
-							$tagsArray = explode(",", $Tags);
-							if($tagsArray && count($tagsArray)) {
-								foreach($tagsArray as $tag) {
-									$tag = Convert::raw2sql(trim($tag));
-									if($tag) {
-										$tagObject = DataObject::get_one("EcommerceProductTag", "\"Title\" = '$tag'");
-										if(!$tagObject) {
-											$tagObject = DataObject::get_one("EcommerceProductTag", "\"Synonyms\" LIKE '%$tag%'");
-										}
-										if(!$tagObject) {
-											$tagObject = new EcommerceProductTag();
-											$tagObject->Title = $tag;
-											$tagObject->write();
-										}
-										$existingTags = $page->EcommerceProductTags();
-										$existingTags->add($tagObject);
-									}
-								}
-							}
-							if($member) {
-								DB::query("DELETE FROM \"ModuleProduct_Authors\" WHERE ModuleProductID = ".$page->ID." AND MemberID <> ".$member->ID );
-								$existingAuthors = $page->Authors();
-								$existingAuthors->add($member);
-							}
-							else {
-								DB::alteration_message("no member for  <b>$Title</b>", "deleted");
-							}
-							if($new === true) {
-								DB::alteration_message("added <b>$Title</b>", "created");
-							}
-							elseif($new === false)  {
-								DB::alteration_message("updated <b>$Title</b>", "edited");
-							}
-							elseif($new === null){
-								DB::alteration_message("error updating <b>$Title</b>", "deleted");
-							}
-							else {
-								DB::alteration_message("BIG error updating <b>$Title</b>", "deleted");
-							}
+						if($new == false && isset($page->ParentID) && $page->ParentID  && $page->ParentID > 0 && $page->ParentID != $parentID){
+							//do nothing
 						}
 						else {
-							DB::alteration_message("row found without title or code", "deleted");
+							if(!$new) {
+								DB::query("DELETE FROM \"EcommerceProductTag_Products\" WHERE ProductID = ".$page->ID);
+							}
+							if($Title && $Code) {
+								$member = null;
+								//member
+								if($ScreenName) {
+									$member = DataObject::get_one("Member", "\"ScreenName\" = '$ScreenName'");
+								}
+								$identifierField = Member::get_unique_identifier_field();
+								if(!$member) {
+									$member = DataObject::get_one('Member', " \"$identifierField\" = '$Email'");
+								}
+								if($member) {
+									$i = 0;
+									while($replaceMember = DataObject::get_one('Member', " \"$identifierField\" = '$Email' AND \"Member\".\"ID\" <> ".$member->ID)) {
+										if($replaceMember) {
+											$i++;
+											$member = $replaceMember;
+											$Email = $Email."_DOUBLE_$i";
+										}
+									}
+								}
+								if(!$member){
+									$member = new Member();
+								}
+								if($ScreenName) {
+									$member->ScreenName = $ScreenName;
+									$member->Email = $Email;
+									$member->GithubURL = $GithubURL;
+									$member->SilverstripeDotOrgURL = $SilverstripeDotOrgURL;
+									$member->CompanyName = $CompanyName;
+									$member->CompanyURL = $CompanyURL;
+									if(!$member->Password) {
+										$member->Password = Member::create_new_password();
+									}
+									$member->write();
+									$member->Groups()->add($group);
+								}
+								else {
+									DB::alteration_message("no screen name provided for <b>$Title</b>", "deleted");
+								}
+								//page
+								$page->ImportID = $ImportID;
+								$page->ParentID = $parentID;
+								$page->ShowInSearch = 1;
+								$page->ShowInMenus = 1;
+								$page->Title = $Title;
+								$page->MetaTitle = $Title;
+								$page->MenuTitle = $Title;
+								$page->MetaDescription = strip_tags($Description);
+								$page->Code = $Code;
+								$page->InternalItemID = $Code;
+								$page->URLSegment = $Code;
+								$page->ProvideComments = true;
+
+								$page->MainURL = $MainURL;
+								$page->ReadMeURL = $ReadMeURL;
+								$page->DemoURL= $DemoURL;
+								$page->SvnURL = $SvnURL;
+								$page->GitURL = $GitURL;
+								$page->OtherURL = $OtherURL;
+
+								$page->writeToStage('Stage');
+								$page->Publish('Stage', 'Live');
+								$page->Status = "Published";
+								$tagsArray = explode(",", $Tags);
+								if($tagsArray && count($tagsArray)) {
+									foreach($tagsArray as $tag) {
+										$tag = Convert::raw2sql(trim($tag));
+										if($tag) {
+											$tagObject = DataObject::get_one("EcommerceProductTag", "\"Title\" = '$tag'");
+											if(!$tagObject) {
+												$tagObject = DataObject::get_one("EcommerceProductTag", "\"Synonyms\" LIKE '%$tag%'");
+											}
+											if(!$tagObject) {
+												$tagObject = new EcommerceProductTag();
+												$tagObject->Title = $tag;
+												$tagObject->write();
+											}
+											$existingTags = $page->EcommerceProductTags();
+											$existingTags->add($tagObject);
+										}
+									}
+								}
+								if($member) {
+									DB::query("DELETE FROM \"ModuleProduct_Authors\" WHERE ModuleProductID = ".$page->ID." AND MemberID <> ".$member->ID );
+									$existingAuthors = $page->Authors();
+									$existingAuthors->add($member);
+								}
+								else {
+									DB::alteration_message("no member for  <b>$Title</b>", "deleted");
+								}
+								if($new === true) {
+									DB::alteration_message("added <b>$Title</b>", "created");
+								}
+								elseif($new === false)  {
+									DB::alteration_message("updated <b>$Title</b>", "edited");
+								}
+								elseif($new === null){
+									DB::alteration_message("error updating <b>$Title</b>", "deleted");
+								}
+								else {
+									DB::alteration_message("BIG error updating <b>$Title</b>", "deleted");
+								}
+							}
+							else {
+								DB::alteration_message("row found without title or code", "deleted");
+							}
 						}
 					}
 					else {
