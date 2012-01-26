@@ -57,7 +57,7 @@ class ImportModulesTask extends BuildTask{
 		$fullArray = array();
 		$file = Director::baseFolder().self::get_data_source();
 		if (($handle = fopen($file, "r")) !== FALSE) {
-			while (($row = fgetcsv($handle, 0, ",")) !== FALSE) {
+			while (($row = fgetcsv($handle)) !== FALSE) {
 				$numberOfFields = count($row);
 				//echo "<p> $num fields in line $rowPosition: <br /></p>\n";
 				$rowPosition++;
