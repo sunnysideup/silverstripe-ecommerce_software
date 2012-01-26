@@ -4,6 +4,10 @@
 
 class ImportModulesTask extends BuildTask{
 
+	static $data_source = "/mysite/data/modules.csv";
+		function get_data_source() {return self::$register_group_title;}
+		function get_data_source($s) {self::$register_group_title = $s;}
+
 	static $register_group_title = "Software Authors";
 		function set_register_group_title($s) {self::$register_group_title = $s;}
 
@@ -51,9 +55,9 @@ class ImportModulesTask extends BuildTask{
 			16=> "Description"
 		);
 		$fullArray = array();
-		$file = Director::baseFolder()."/mysite/data/modules.csv";
+		$file = Director::baseFolder().self::get_data_source();
 		if (($handle = fopen($file, "r")) !== FALSE) {
-			while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+			while (($row = fgetcsv($handle, 0, ",")) !== FALSE) {
 				$numberOfFields = count($row);
 				//echo "<p> $num fields in line $rowPosition: <br /></p>\n";
 				$rowPosition++;
@@ -241,7 +245,7 @@ class ImportModulesTask extends BuildTask{
 			}
 		}
 		else {
-			DB::alteration_message("no parent group page found", "deleted");
+			DB::alteration_message("no parent group page found (a ModuleProductGroup with new-modules as URL Segment", "deleted");
 		}
 	}
 }
