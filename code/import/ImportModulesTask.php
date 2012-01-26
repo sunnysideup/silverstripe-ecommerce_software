@@ -4,6 +4,10 @@
 
 class ImportModulesTask extends BuildTask{
 
+	static $parent_url_segment = "new-modules";
+		function get_data_source() {return self::$parent_url_segment;}
+		function set_data_source($s) {self::$parent_url_segment = $s;}
+
 	static $data_source = "/mysite/data/modules.csv";
 		function get_data_source() {return self::$data_source;}
 		function set_data_source($s) {self::$data_source = $s;}
@@ -28,6 +32,7 @@ class ImportModulesTask extends BuildTask{
 
 	function run($request) {
 		return $this->importmodules();
+		return $this->sortPagesAlphabetically();
 	}
 	function cleantags(){
 		DB::query("DELETE FROM \"EcommerceProductTag\" WHERE TRIM(Title) = '' OR TRIM(Code) = '' OR Title IS NULL or Code IS NULL;");
@@ -76,7 +81,7 @@ class ImportModulesTask extends BuildTask{
 
 	private function makeModules($rows)  {
 		increase_time_limit_to(600);
-		$parent = DataObject::get_one("ModuleProductGroup", "\"URLSegment\" = 'new-modules'");
+		$parent = DataObject::get_one("ModuleProductGroup", "\"URLSegment\" = '".self::$parent_url_segment."'");
 		DB::query("DELETE FROM \"EcommerceProductTag\" WHERE TRIM(Title) = '';");
 		if($parent) {
 			$parentID = $parent->ID;
@@ -248,6 +253,20 @@ class ImportModulesTask extends BuildTask{
 			DB::alteration_message("no parent group page found (a ModuleProductGroup with new-modules as URL Segment", "deleted");
 		}
 	}
+
+	private function sortPagesAlphabetically(){
+		$parent = DataObject::get_one("ModuleProductGroup", "\"URLSegment\" = '".self::$parent_url_segment."'");
+		if($parent) {
+			$pages = DataObject::get("ModuleProduct", "\"ParentID\" = ".$parent->ID, "\"Title\" ASC");
+			$i = 0;
+			foreach($pages as $page) {
+				$i++;
+				DB::query("Update \"SiteTree\"      SET \"Sort\" = $i WHERE \"ID\" = ".$page->ID);
+				DB::query("Update \"SiteTree_Live\" SET \"Sort\" = $i WHERE \"ID\" = ".$page->ID);
+			}
+		}
+	}
+
 }
 
 
