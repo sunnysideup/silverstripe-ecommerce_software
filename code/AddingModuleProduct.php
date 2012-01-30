@@ -139,9 +139,14 @@ class AddingModuleProduct_Form extends Form  {
 		if(is_array($data["EcommerceProductTags"]) && count($data["EcommerceProductTags"])) {
 			$page->EcommerceProductTags()->addMany($data["EcommerceProductTags"]);
 		}
+		if($member->IsAdmin() && $page){
+			$pages = DataObject::get("ModuleProduct", "\"Sort\" > ".$page->Sort, "Sort ASC", null, 1);
+			foreach($pages as $page){
+				//no need to do anymore.
+			}
+		}
 		Director::redirect($page->Link());
 	}
-
 }
 
 class AddingModuleProduct_RequiredFields extends RequiredFields {
