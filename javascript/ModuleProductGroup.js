@@ -71,6 +71,7 @@ ModuleProductGroup = {
 	},
 
 	setupKeywordSearch: function(){
+		jQuery("#ModuleSearchForm input.action").hide();
 		jQuery("#ModuleSearchForm #Search input").keyup(
 			function(){
 				phrase = escape(jQuery(this).val());
@@ -84,12 +85,12 @@ ModuleProductGroup = {
 				}
 			}
 		);
+		//why is this here?
 		jQuery("#ModuleSearchForm #Search input").keyup();
 		jQuery("#ModuleSearchForm #Search input").change(
 			function() {
 				phrase = jQuery(this).val();
 				if(phrase.length > 2) {
-					jQuery("#ModuleSearchForm input.action").hide();
 					url = jQuery(this).parents("form").attr('action');
 					jQuery("#Search").addClass("loading");
 					jQuery.getJSON(

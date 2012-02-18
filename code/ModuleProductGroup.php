@@ -101,7 +101,8 @@ class ModuleProductGroup extends ProductGroupWithTags {
 				if(Versioned::current_stage() == "Live") {
 					$stage = "_Live";
 				}
-				$where = "\"Product$stage\".\"ID\" IN (".implode(",", $idArray).") $filter";
+				$where = "\"Product$stage\".\"ID\" IN (".implode(",", $idArray).") $filter AND ".$groupFilter;
+				$groupFilter = $this->getGroupFilter();
 				$products = DataObject::get('Product',$where);
 				if($products) {
 					return $products;
@@ -256,15 +257,37 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 			$data["Results"] = new DataObjectSet();
 		}
 		$search = Convert::raw2sql($data["Query"]);
-		$additionalProducts = DataObject::get("ModuleProduct", "\"Code\" LIKE '%$search%'");
-		if($additionalProducts) {
-			foreach($additionalProducts as $moduleProduct) {
-				$data["Results"]->push($moduleProduct);
+		if(strlen($search) > 2) {
+			$additionalProducts = DataObject::get("ModuleProduct", "\"Code\" LIKE '%$search%' OR \"MenuTitle\" LIKE '%$search%'");
+			if($additionalProducts) {
+				foreach($additionalProducts as $moduleProduct) {
+					$data["Results"]->push($moduleProduct);
+				}
+			}
+			$tags = DataObject::get("EcommerceProductTag", "\"Title\" LIKE '%$search%'");
+			if($tags) {
+				foreach($tags as $tag) {
+					$rows = DB::query("SELECT ProductID FROM EcommerceProductTag_Products WHERE EcommerceProductTagID = ".$tag->ID);
+					if($rows) {
+						foreach($rows as $row) {
+							$data["Results"]->push(DataObject::get_by_id("ModuleProduct", $row["ProductID"]));
+						}
+					}
+				}
+			}
+			$authors = DataObject::get("Member", "\"ScreenName\" LIKE '%$search%' OR \"FirstName\" LIKE '%$search%' OR \"Surname\" LIKE '%$search%'");
+			if($authors) {
+				foreach($authors as $author) {
+					$rows = DB::query("SELECT \"ModuleProductID\" FROM \"ModuleProduct_Authors\" WHERE \"MemberID\" = ".$author->ID);
+					if($rows) {
+						foreach($rows as $row) {
+							$data["Results"]->push(DataObject::get_by_id("ModuleProduct", $row["ModuleProductID"]));
+						}
+					}
+				}
 			}
 		}
 		$data["Results"]->removeDuplicates();
-		//TO DO ADD TAGS
-		//TO DO ADD AUTHORS
 		if(Director::is_ajax()) {
 			return Convert::array2json(array("ModuleProducts" => $data["Results"]->column("ID")));
 		}
