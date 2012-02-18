@@ -100,8 +100,8 @@ class ModuleProductGroup extends ProductGroupWithTags {
 				if(Versioned::current_stage() == "Live") {
 					$stage = "_Live";
 				}
-				$where = "\"Product$stage\".\"ID\" IN (".implode(",", $idArray).") $filter AND ".$groupFilter;
 				$groupFilter = $this->getGroupFilter();
+				$where = "\"Product$stage\".\"ID\" IN (".implode(",", $idArray).") $filter AND ".$groupFilter;
 				$products = DataObject::get('Product',$where);
 				if($products) {
 					return $products;

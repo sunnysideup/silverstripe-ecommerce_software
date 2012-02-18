@@ -224,7 +224,7 @@ class ImportModulesTask extends BuildTask{
 									}
 								}
 								if($member) {
-									DB::query("DELETE FROM \"ModuleProduct_Authors\" WHERE ModuleProductID = ".$page->ID." AND MemberID <> ".$member->ID );
+									DB::query("DELETE FROM \"ModuleProduct_Authors\" WHERE \"ModuleProductID\" = ".$page->ID." AND MemberID <> ".$member->ID );
 									$existingAuthors = $page->Authors();
 									$existingAuthors->add($member);
 								}
