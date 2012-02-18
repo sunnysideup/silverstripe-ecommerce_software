@@ -20,7 +20,6 @@ class ModuleProductGroup extends ProductGroupWithTags {
 	 */
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
-		$fields->removeByName("LevelOfProductsToShow");
 		$fields->removeByName("Tags");
 		return $fields;
 	}
@@ -161,12 +160,6 @@ class ModuleProductGroup extends ProductGroupWithTags {
 		}
 	}
 
-
-
-	function ProductsPerPage() {return $this->MyNumberOfProductsPerPage();}
-	function MyNumberOfProductsPerPage() {
-		return 1000;
-	}
 
 }
 
