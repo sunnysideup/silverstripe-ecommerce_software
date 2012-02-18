@@ -38,77 +38,75 @@ class ModuleProductGroup extends ProductGroupWithTags {
 	 * @return DataObjectSet | Null
 	 **/
 	protected function currentInitialProducts($tagOrTags){
-		$stage = '';
-		if(Versioned::current_stage() == "Live") {
-			$stage = "_Live";
-		}
-
+		$products = null;
 		// STANDARD FILTER
 		$filter = $this->getStandardFilter(); //
+		$filter .= " AND ".$this->getGroupFilter();
 		//work out current tags
 		$tags = null;
-		if(!$tagOrTags) {
-			$tags = $this->DefaultEcommerceProductTags();
-		}
-		elseif($tagOrTags instanceOf DataObjectSet) {
-			$tags = $tagOrTags;
-			//do nothing
-		}
-		elseif($tagOrTags instanceOf DataObject) {
-			$tags = new DataObjectSet(array($tagOrTags));
-		}
-		elseif(is_array($tagOrTags)) {
-			$tags = DataObject::get("EcommerceProductTag", "\"EcommerceProductTag\".\"ID\" IN(".implode(",", $tagOrTags).")");
-		}
-		elseif(intval($tagOrTags) == $tagOrTags) {
-			$tags = DataObject::get("EcommerceProductTag", "\"EcommerceProductTag\".\"ID\" IN(".$tagOrTags.")");
-		}
-		else {
-			return null;
-		}
-		$idArray = array();
-		if($tags) {
-			if($tags->count()) {
-				foreach($tags as $tag) {
-					$idArray = array();
-					$rows = DB::query("
-						SELECT \"ProductID\"
-						FROM \"EcommerceProductTag_Products\"
-							INNER JOIN \"ModuleProduct{$stage}\"
-								ON \"ModuleProduct{$stage}\".\"ID\" = \"EcommerceProductTag_Products\".\"ProductID\"
-						WHERE \"EcommerceProductTag_Products\".\"EcommerceProductTagID\" IN (".implode(",",$tags->column("ID")).")
-					");
-					if($rows) {
-						foreach($rows as $row) {
-							$idArray[$row["ProductID"]] = $row["ProductID"];
-						}
-					}
-					if(count($idArray)) {
-						$products = DataObject::get("ModuleProduct", "\"ModuleProduct{$stage}\".\"ID\" IN(".implode(",", $idArray).")");
-						if($products) {
-							$this->totalCount = $products->count();
-							return $products;
-						}
-					}
-				}
+		if($tagOrTags) {
+			if($tagOrTags instanceOf DataObjectSet) {
+				$tags = $tagOrTags;
+				//do nothing
 			}
-		}
-
-		if($idArray) {
-			if(count($idArray)) {
+			elseif($tagOrTags instanceOf DataObject) {
+				$tags = new DataObjectSet(array($tagOrTags));
+			}
+			elseif(is_array($tagOrTags)) {
+				$tags = DataObject::get("EcommerceProductTag", "\"EcommerceProductTag\".\"ID\" IN(".implode(",", $tagOrTags).")");
+			}
+			elseif(intval($tagOrTags) == $tagOrTags) {
+				$tags = DataObject::get("EcommerceProductTag", "\"EcommerceProductTag\".\"ID\" IN(".$tagOrTags.")");
+			}
+			else {
+				user_error("Error in tags", E_USER_NOTICE);
+			}
+			$idArray = array();
+			if($tags) {
 				$stage = '';
 				if(Versioned::current_stage() == "Live") {
 					$stage = "_Live";
 				}
-				$groupFilter = $this->getGroupFilter();
-				$where = "\"Product$stage\".\"ID\" IN (".implode(",", $idArray).") $filter AND ".$groupFilter;
-				$products = DataObject::get('Product',$where);
-				if($products) {
-					return $products;
+				if($tags->count()) {
+					foreach($tags as $tag) {
+						$rows = DB::query("
+							SELECT \"ProductID\"
+							FROM \"EcommerceProductTag_Products\"
+								INNER JOIN \"ModuleProduct{$stage}\"
+									ON \"ModuleProduct{$stage}\".\"ID\" = \"EcommerceProductTag_Products\".\"ProductID\"
+							WHERE \"EcommerceProductTag_Products\".\"EcommerceProductTagID\" IN (".implode(",",$tags->column("ID")).")
+						");
+						if($rows) {
+							foreach($rows as $row) {
+								$idArray[$row["ProductID"]] = $row["ProductID"];
+							}
+						}
+					}
+					if(count($idArray)) {
+						$products = DataObject::get($this->getClassNameSQL(), "\"".$this->getClassNameSQL()."{$stage}\".\"ID\" IN(".implode(",", $idArray).") AND $filter", null, $this->getGroupJoin());
+					}
 				}
 			}
 		}
+		if(!$products) {
+			$products = DataObject::get($this->getClassNameSQL(), $filter, null, $this->getGroupJoin(), 500);
+		}
+		if($products) {
+			$this->totalCount = $products->count();
+			return $products;
+		}
+
 	}
+
+	/**
+	 * Returns the class we are working with for the initial product selection
+	 * @return String
+	 */
+	protected function getClassNameSQL(){
+		return "ModuleProduct";
+	}
+
+
 
 	/**
 	 * returns the CLASSNAME part of the final selection of products.
@@ -129,6 +127,7 @@ class ModuleProductGroup extends ProductGroupWithTags {
 			$stage = "_Live";
 		}
 		$idArray = array();
+		$productIDs[0] = 0;
 		$rows = DB::query("
 			SELECT \"EcommerceProductTagID\"
 			FROM \"EcommerceProductTag_Products\"
@@ -257,7 +256,7 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 					$data["Results"]->push($moduleProduct);
 				}
 			}
-			$tags = DataObject::get("EcommerceProductTag", "\"Title\" LIKE '%$search%'");
+			$tags = DataObject::get("EcommerceProductTag", "\"Title\" LIKE '%$search%' OR \"Synonyms\" LIKE '%$search%' OR \"Explanation\" LIKE '%$search%' ");
 			if($tags) {
 				foreach($tags as $tag) {
 					$rows = DB::query("SELECT ProductID FROM EcommerceProductTag_Products WHERE EcommerceProductTagID = ".$tag->ID);

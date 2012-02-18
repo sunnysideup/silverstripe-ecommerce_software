@@ -72,8 +72,15 @@ ModuleProductGroup = {
 
 	setupKeywordSearch: function(){
 		jQuery("#ModuleSearchForm input.action").hide();
+		jQuery("#ModuleSearchForm #Search input").keydown(
+			function(event) {
+				if(event.which == 13) {
+					return false;
+				}
+			}
+		);
 		jQuery("#ModuleSearchForm #Search input").keyup(
-			function(){
+			function(event){
 				phrase = escape(jQuery(this).val());
 				if(phrase.length > 2) {
 					jQuery(this).addClass("readyToSearch");
@@ -93,6 +100,7 @@ ModuleProductGroup = {
 				if(phrase.length > 2) {
 					url = jQuery(this).parents("form").attr('action');
 					jQuery("#Search").addClass("loading");
+					jQuery(".tags a, #SidebarModuleProductGroupTags a").removeClass("current");
 					jQuery.getJSON(
 						url,
 						{
