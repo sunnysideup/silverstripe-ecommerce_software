@@ -1,5 +1,5 @@
 li.infoItem {font-size: 0.77em; clear: left;}
-li.infoItem.moduleList {margin-top: 0.7em; margin-bottom: 0.7em;}
+li.infoItem.moduleList {margin-top: 0.77em; margin-bottom: 0.77em;}
 li.infoItem span { }
 li.infoItem span.label {font-weight: bold;}
 li.infoItem span.value {}
@@ -8,7 +8,7 @@ li.infoItem span.value {}
 /* group */
 .moreInfoLink {font-weight: bold;}
 .explanation {font-size: 0.77em;}
-.tags {font-size: 0.77em;}
+.tags {font-size: 0.57em;}
 .tags .current, #SidebarModuleProductGroupTags a.current {font-size: 1.23em; color: #317010;}
 .loading form input.text{background-image: url("/ecommerce/images/loading.gif");background-position: bottom right; background-repeat: no-repeat;}
 .loading form input.action{display: none;}
@@ -21,3 +21,8 @@ li.infoItem span.value {}
 p.source {font-size: 50%; margin-top: 0px; padding-top:0px; margin-bottom: 1em; }
 
 h3.moduleH3, #EcommerceProductTags h3 {padding-top: 1.3em!important;margin-top:0!important;}
+
+.variationsTable {font-size: 10px}
+td.label {text-align: left!important;}
+
+#ReadMeHolder {font-size: 0.57em; border-left: 5px solid #808383; padding-left: 5px;}

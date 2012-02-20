@@ -150,7 +150,7 @@ ModuleProductGroup = {
 			jQuery("#SidebarModuleProductGroupTags li.showAll").show();
 			this.setTagInURL(tag);
 		}
-		this.scrollTo("Products");
+		this.scrollTo("Layout");
 
 	},
 

@@ -13,8 +13,10 @@
 	</div>
 
 	<% if ReadMeContent %>
+	<h3  class="moduleH3">read me</h3>
+	<p>The content of the <a href="$ReadMeURL.URL">README.md</a> has been extracted. You can <a href="#ReadMeHolder" class="md2html" rel="ReadMeHolder">view this now as html</a>.</p>
 	<div id="ReadMeHolder">
-		<h3  class="moduleH3">Read Me Content</h3>
+
 		<pre>$ReadMeContent</pre>
 		<p class="source">Source: <a href="$ReadMeURL.URL">$ReadMeURL</a></p>
 	</div>
@@ -68,6 +70,8 @@
 	<% if Code %><h3 class="moduleH3">Code</h3><ul id="CodeHolderList" class="moduleList"><li class="infoItem first last"><span class="label">Code (folder name):</span> <span class="value">$Code</span></li></ul><% end_if %>
 
 	<% include OtherProductInfo %>
+
+	<% if EmailFormHolder %><div id="EmailFormHolder">$EmailFormHolder</div><% end_if %>
 
 	<% if Form %><div id="FormHolder">$Form</div><% end_if %>
 

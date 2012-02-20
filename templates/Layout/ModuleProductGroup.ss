@@ -26,7 +26,6 @@
 				</span><% end_if %>
 				<div class="explanation" id="Explanation$ID">
 					<p>$MetaDescription</p>
-					<% include ProductActions %>
 					<p class="more"><a href="$Link">more details ...</a></p>
 				</div>
 			</li>

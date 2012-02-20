@@ -12,17 +12,6 @@ class ModuleProduct extends Product {
 
 	public static $icon = "ecommerce_software/images/treeicons/ModuleProduct";
 
-	public static $db = array(
-		"Code" => "Varchar",
-		"MainURL" => "Varchar(255)",
-		"ReadMeURL" => "Varchar(255)",
-		"DemoURL" => "Varchar(255)",
-		"SvnURL" => "Varchar(255)",
-		"GitURL" => "Varchar(255)",
-		"OtherURL" => "Varchar(255)",
-		"ImportID" => "Int"
-	);
-
 	public static $api_access = array(
 		'view' => array(
 				"ModuleTitle",
@@ -38,10 +27,24 @@ class ModuleProduct extends Product {
 			)
 	 );
 
+	public static $db = array(
+		"Code" => "Varchar",
+		"MainURL" => "Varchar(255)",
+		"ReadMeURL" => "Varchar(255)",
+		"DemoURL" => "Varchar(255)",
+		"SvnURL" => "Varchar(255)",
+		"GitURL" => "Varchar(255)",
+		"OtherURL" => "Varchar(255)",
+		"ImportID" => "Int"
+	);
+
+	public static $has_many = array(
+		"ModuleProductEmails" => "ModuleProductEmail"
+	);
+
 	public static $casting = array(
 		"ModuleTitle" => "Varchar"
 	);
-
 
 	function ModuleTitle(){return $this->getModuleTitle();}
 	function getModuleTitle() {
@@ -103,15 +106,39 @@ class ModuleProduct extends Product {
 		return $fields;
 	}
 
+	function HasEmail(){
+		if(DataObject::get_one("ModuleProductEmail", "ModuleProductID = ".$this->ID)) {return true;}
+		return false;
+	}
 
+	public function EmailDefaults(){
+		$to = "";
+		$authorEmailArray = array();
+		if($authors = $this->Authors()) {
+			foreach($authors as $author) {
+				$authorEmailArray[] = $author->Email;
+			}
+		}
+		$to = implode(",", $authorEmailArray);
+		$subject = _t("ModuleProduct.SUBJECT", "Check your modules");
+		$link = $this->Link();
+		$username = implode(" OR ", $authorEmailArray);
+		$body = $this->Email;
+	}
+
+	protected function createBodyAppendix(){
+	}
 
 }
+
 
 
 class ModuleProduct_Controller extends Product_Controller {
 
 	function init(){
 		parent::init();
+		Requirements::javascript("ecommerce_software/javascript/Markdown.Converter.js");
+		Requirements::javascript("ecommerce_software/javascript/ModuleProduct.js");
 		Requirements::themedCSS("ModuleProduct");
 	}
 
@@ -186,5 +213,16 @@ class ModuleProduct_Controller extends Product_Controller {
 		return true;
 	}
 
+	function EmailForm(){
+		if($this->canEdit()) {
+			if(!$this->HasEmail()){
+				return new ModuleProductEmail_Form($this, "EmailForm", $this->dataRecord);
+			}
+		}
+	}
+
 
 }
+
+
+

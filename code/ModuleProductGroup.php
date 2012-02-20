@@ -89,7 +89,7 @@ class ModuleProductGroup extends ProductGroupWithTags {
 			}
 		}
 		if(!$products) {
-			$products = DataObject::get($this->getClassNameSQL(), $filter, null, $this->getGroupJoin(), 500);
+			$products = DataObject::get($this->getClassNameSQL(), $filter, null, $this->getGroupJoin(), $this->currentLimitSQL());
 		}
 		if($products) {
 			$this->totalCount = $products->count();
@@ -262,7 +262,10 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 					$rows = DB::query("SELECT ProductID FROM EcommerceProductTag_Products WHERE EcommerceProductTagID = ".$tag->ID);
 					if($rows) {
 						foreach($rows as $row) {
-							$data["Results"]->push(DataObject::get_by_id("ModuleProduct", $row["ProductID"]));
+							$item = DataObject::get_by_id("ModuleProduct", $row["ProductID"]);
+							if($item) {
+								$data["Results"]->push($item);
+							}
 						}
 					}
 				}
@@ -273,13 +276,18 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 					$rows = DB::query("SELECT \"ModuleProductID\" FROM \"ModuleProduct_Authors\" WHERE \"MemberID\" = ".$author->ID);
 					if($rows) {
 						foreach($rows as $row) {
-							$data["Results"]->push(DataObject::get_by_id("ModuleProduct", $row["ModuleProductID"]));
+							$item = DataObject::get_by_id("ModuleProduct", $row["ModuleProductID"]);
+							if($item) {
+								$data["Results"]->push($item);
+							}
 						}
 					}
 				}
 			}
 		}
-		$data["Results"]->removeDuplicates();
+		if($data["Results"] && $data["Results"] instanceOf DataObjectSet) {
+			$data["Results"]->removeDuplicates();
+		}
 		if(Director::is_ajax()) {
 			return Convert::array2json(array("ModuleProducts" => $data["Results"]->column("ID")));
 		}

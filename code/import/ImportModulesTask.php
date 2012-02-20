@@ -31,9 +31,10 @@ class ImportModulesTask extends BuildTask{
 
 
 	function run($request) {
-		return $this->createAuthorGroup();
-		return $this->importmodules();
-		return $this->sortPagesAlphabetically();
+		$this->createAuthorGroup();
+		$this->importmodules();
+		$this->sortPagesAlphabetically();
+		return "BBBBBBBBBBBBBBB";
 	}
 	function cleantags(){
 		DB::query("DELETE FROM \"EcommerceProductTag\" WHERE TRIM(Title) = '' OR TRIM(Code) = '' OR Title IS NULL or Code IS NULL;");
@@ -79,6 +80,7 @@ class ImportModulesTask extends BuildTask{
 	}
 
 	private function createAuthorGroup(){
+
 		if(!$group = DataObject::get_one("Group", "Code = '".self::$register_group_code."'")) {
 			$group = new Group();
 			$group->Code = self::$register_group_code;
@@ -103,7 +105,10 @@ class ImportModulesTask extends BuildTask{
 		else {
 			$parentID = 0;
 		}
-
+		$group = DataObject::get_one("Group", "Code = '".self::$register_group_code."'");
+		if(!$group) {
+			user_error("Group for authors could not be found!");
+		}
 		if($parentID) {
 			if($rows) {
 				foreach($rows as $row) {
