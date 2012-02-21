@@ -78,6 +78,17 @@ class ModuleProduct extends Product {
 		return false;
 	}
 
+	public static $searchable_fields = array(
+		'Title' => "PartialMatchFilter",
+		'InternalItemID' => "PartialMatchFilter",
+		'ImportID',
+		'ShowInSearch',
+		'AllowPurchase',
+		'FeaturedProduct',
+		'Price'
+	);
+
+
 	function getCMSFields(){
 		$fields = new FieldSet();
 		$fields = parent::getCMSFields();
