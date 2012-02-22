@@ -117,9 +117,23 @@ class ModuleProduct extends Product {
 		return $fields;
 	}
 
-	function HasEmail(){
-		if(DataObject::get_one("ModuleProductEmail", "ModuleProductID = ".$this->ID)) {return true;}
+	/**
+	 * Has an email been sent?
+	 * @return Boolean
+	 *
+	 */
+	public function HasEmail(){
+		if($this->EmailObject()) {return true;}
 		return false;
+	}
+
+	/**
+	 * Return the ModuleProductEmail
+	 * @return Object (ModuleProductEmail)
+	 *
+	 */
+	public function EmailObject(){
+		return DataObject::get_one("ModuleProductEmail", "\"ModuleProductID\" = ".$this->ID);
 	}
 
 	public function EmailDefaults(){
@@ -130,14 +144,32 @@ class ModuleProduct extends Product {
 				$authorEmailArray[] = $author->Email;
 			}
 		}
-		$to = implode(",", $authorEmailArray);
+		$to = implode(", ", $authorEmailArray);
 		$subject = _t("ModuleProduct.SUBJECT", "Check your modules");
-		$link = $this->Link();
 		$username = implode(" OR ", $authorEmailArray);
-		$body = $this->Email;
+		$body = $this->createBodyAppendix();
+		return new ArrayData (
+			array(
+				"To" => $to,
+				"Subject" => $subject,
+				"Link" => $link,
+				"Username" => $username,
+				"Body" => $body
+			)
+		);
 	}
 
 	protected function createBodyAppendix(){
+		$pageLink = Director::absoluteURL($this->Link());
+		$passwordResetLink = Director::absoluteURL("Security/lostpassword");
+		$logInLink = Director::absoluteURL("Security/login");
+		$customisationArray = array(
+			"PageLink" => $pageLink,
+			"PasswordResetLink" => $passwordResetLink,
+			"LogInLink" => $LogInLink,
+		);
+		$body = $this->customise($customisationArray)->renderWith("ModuleProductEmailBody");
+		return $body;
 	}
 
 }
@@ -230,6 +262,10 @@ class ModuleProduct_Controller extends Product_Controller {
 				return new ModuleProductEmail_Form($this, "EmailForm", $this->dataRecord);
 			}
 		}
+	}
+
+	function EmailTo(){
+
 	}
 
 

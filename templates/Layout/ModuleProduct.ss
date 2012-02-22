@@ -71,7 +71,22 @@
 
 	<% include OtherProductInfo %>
 
-	<% if EmailFormHolder %><div id="EmailFormHolder">$EmailFormHolder</div><% end_if %>
+	<% if canEdit %>
+	<div id="EmailFormHolder">
+	<% if EmailObject %>
+		<h2>Emails sent</h2>
+		<p>Email has been sent to $EmailObject.To (subject: $EmailObject.Subject).</p>
+	<% else %>
+		<% if EmailForm %>
+			<h2>E-mail Authors</h2>
+			$EmailForm
+		<% else %>
+		<% end_if %>
+	<% end_if %>
+	</div>
+	<% else %>
+	You are not logged in.
+	<% end_if %>
 
 	<% if Form %><div id="FormHolder">$Form</div><% end_if %>
 

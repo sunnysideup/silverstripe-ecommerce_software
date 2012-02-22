@@ -60,14 +60,14 @@ class ModuleProductEmail extends DataObject {
 class ModuleProductEmail_Form extends Form  {
 
 	function __construct($controller, $name, $moduleProduct) {
+		$defaults = $moduleProduct->EmailDefaults();
 		$fields = new FieldSet();
-		$fields->push(new HeaderField('SendEmail',_t("ModuleProductEmail.SENDEMAILTOAUTHORS", "Send Email to Authors")));
-		$fields->push(new TextField('To','To', $to));
-		$fields->push(new TextField('Subject','Subject', $subject));
-		$fields->push(new HiddenField('ModuleProductID', $moduleProduct->ID));
-		$fields->push(new HTMLEditorField('Body','Body', $body));
+		$fields->push(new TextField('To','To', $defaults->To));
+		$fields->push(new TextField('Subject','Subject', $defaults->Subject));
+		$fields->push(new HiddenField('ModuleProductID','ModuleProductID', $moduleProduct->ID));
+		$fields->push(new HTMLEditorField('Body','Body', $defaults->Body));
 		$actions = new FieldSet(new FormAction("submit", "submit"));
-		$validator = new ModuleProductEmail_RequiredFields();
+		$validator = new ModuleProductEmail_RequiredFields(array("Subject"));
 		parent::__construct($controller, $name, $fields, $actions, $validator);
 		$this->loadDataFrom($moduleProduct->emailDefaults());
 		return $this;
@@ -93,44 +93,20 @@ class ModuleProductEmail_Form extends Form  {
 		$email = new ModuleProductEmail();
 		$form->saveInto($email);
 		$email->write();
+		die(" saving ".$email->ID);
 		Director::redirect($page->Link());
 	}
 }
 
 class ModuleProductEmail_RequiredFields extends RequiredFields {
 
-	protected $currentID = 0;
-
-	function __construct($currentID, $array) {
-		$this->currentID = $currentID;
+	function __construct($array) {
 		parent::__construct($array);
 	}
 
 	function javascript() {
-		$codes = DB::query("SELECT \"Code\" FROM ModuleProduct WHERE ModuleProduct.ID <> ".($this->currentID - 0))->column();
-		if($codes) {
-			$js = '
-				jQuery(document).ready(
-					function() {
-						var AddingModuleProductCodes = new Array(\''.implode("','", $codes).'\');
-						jQuery("#Code input").change(
-							function(){
-								var val = jQuery("#Code input").val();
-								jQuery("#Code input").css("color", "green");
-								for(i = 0; i < AddingModuleProductCodes.length; i++) {
-									if(AddingModuleProductCodes[i] == val) {
-										i = 999999999;
-										alert("Your code \'"+val+"\' is already in use - please use an alternative code.");
-										jQuery("#Code input").focus().css("color", "red");
-									}
-								}
-							}
-						);
-					}
-				);
-			';
-			Requirements::customScript($js, "AddingModuleProductCodes");
-		}
+		$js = '';
+		Requirements::customScript($js, "ModuleProductEmail");
 		return parent::javascript();
 	}
 
@@ -141,22 +117,6 @@ class ModuleProductEmail_RequiredFields extends RequiredFields {
 	*/
 	function php($data) {
 		$valid = true;
-		if(isset($data["Code"])) {
-			$type = Convert::raw2sql($data["Code"]);
-			$extension = '';
-			if(Versioned::current_stage() == "Live") {
-				$extension = "_Live";
-			}
-			if(DataObject::get_one("ModuleProduct", "\"Code\" = '$type' AND ModuleProduct{$extension}.ID <>".($this->currentID - 0))) {
-				$errorMessage = sprintf(_t('Form.CODEALREADYINUSE', "Your code %s is already in use - please check if your code is listed already or use an alternative code."), $type);
-				$this->validationError(
-					$fieldName = "Code",
-					$errorMessage,
-					"required"
-				);
-				$valid = false;
-			}
-		}
 		if(!$valid) {
 			return false;
 		}
