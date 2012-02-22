@@ -14,7 +14,7 @@
 
 	<% if ReadMeContent %>
 	<h3  class="moduleH3">read me</h3>
-	<p>The content of the <a href="$ReadMeURL.URL">README.md</a> has been extracted. You can <a href="#ReadMeHolder" class="md2html" rel="ReadMeHolder">view this now as html</a>.</p>
+	<p>The content of the <a href="$ReadMeURL.URL">README.md</a> has been extracted. You can <a href="#ReadMeHolder" class="md2html" rel="ReadMeHolder">view this converted to html</a>.</p>
 	<div id="ReadMeHolder">
 
 		<pre>$ReadMeContent</pre>
@@ -65,7 +65,7 @@
 	<h3  class="moduleH3">Links</h3>
 	<ul id="ModuleProductLinksList" class="moduleList">
 	<% if MainURL %><li class="infoItem"><span class="label">Home page:</span> <span class="value"><a href="$MainURL.URL">$MainURL</a></span></li><% end_if %>
-	<% if ReadMeURL %><li class="infoItem"><span class="label">README file:</span> <span class="value"><a href="$ReadMeURL.URL">$ReadMeURL</a></span></li><% end_if %>
+	<% if ReadMeContent %><% else %><% if ReadMeURL %><li class="infoItem"><span class="label">README file:</span> <span class="value"><a href="$ReadMeURL.URL">$ReadMeURL</a></span></li><% end_if %><% end_if %>
 	<% if DemoURL %><li class="infoItem"><span class="label">Demo:</span> <span class="value"><a href="$DemoURL.URL">$DemoURL</a></span></li><% end_if %>
 	<% if SvnURL %><li class="infoItem"><span class="label">SVN:</span> <span class="value"><a href="$SvnURL.URL">$SvnURL</a></span></li><% end_if %>
 	<% if GitURL %><li class="infoItem"><span class="label">GIT:</span> <span class="value"><a href="$GitURL.URL">$GitURL</a></span></li><% end_if %>
@@ -75,6 +75,11 @@
 	<% if Code %><h3 class="moduleH3">Code</h3><ul id="CodeHolderList" class="moduleList"><li class="infoItem first last"><span class="label">Code (folder name):</span> <span class="value">$Code</span></li></ul><% end_if %>
 
 	<% include OtherProductInfo %>
+
+	<% if Form %><div id="FormHolder">$Form</div><% end_if %>
+
+	<% if PageComments %><div id="PageCommentsHolder">$PageComments</div><% end_if %>
+
 
 	<% if canEdit %>
 	<div id="EmailFormHolder">
@@ -91,9 +96,6 @@
 	</div>
 	<% end_if %>
 
-	<% if Form %><div id="FormHolder">$Form</div><% end_if %>
-
-	<% if PageComments %><div id="PageCommentsHolder">$PageComments</div><% end_if %>
 
 </div>
 
