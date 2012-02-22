@@ -65,6 +65,8 @@ class AddingModuleProduct_Form extends Form  {
 		}
 		//$fields->push(new DropdownField('ParentID','Type', $types, $controller->dataRecord->ID));
 		$fields->push(new TextField('Title','Title'));
+		$fields->push(new CheckboxField('ShowInMenus','Show in menus (unticking both boxes here will delete the module)'));
+		$fields->push(new CheckboxField('ShowInSearch','Show in search (unticking both boxes here will delete the module)'));
 		$fields->push(new TextareaField('MetaDescription','Three sentence Introduction', 3));
 		$fields->push(new HTMLEditorField('Content','Long Description', 3));
 		$fields->push(new TextField('AdditionalTags','Additional Keyword(s), comma separated'));

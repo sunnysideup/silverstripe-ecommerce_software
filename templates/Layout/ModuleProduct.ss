@@ -24,7 +24,7 @@
 
 	<h3  class="moduleH3">Author(s)</h3>
 	<ul id="AuthorList"  class="moduleList">
-	<% control Authors %>
+	<% control Authors %><% if IsAdmin %><% else %>
 		<li class="infoItem $FirstLast">
 			<strong>
 				<% if ScreenName %>$ScreenName<% else %>$FirstName <% end_if %>
@@ -32,7 +32,6 @@
 			<% if CompanyName %>(<% if CompanyURL %><a href="$CompanyURL.URL"><% end_if %>$CompanyName<% if CompanyURL %></a><% end_if %>)<% end_if %>
 			<% if GithubURL %>, <a href="$GithubURL.URL">Git Hub Profile</a><% end_if %>
 			<% if SilverstripeDotOrgURL %>, <a href="$SilverstripeDotOrgURL.URL">Silverstripe.org profile</a><% end_if %>
-
 			<% if AreYouHappyForPeopleToContactYou %>
 				<h3  class="moduleH3">Contact Details</h3>
 				<ul>
@@ -52,8 +51,14 @@
 					<p>Sorry, <strong><% if Company %><% else %>$FirstName<% end_if %></strong> is not available for paid support for this module.</p>
 				<% end_if %>
 			<% end_if %>
+			<% if ModuleProducts %>
+				<ul id="otherModules">
+					<li><strong>List of work: </strong><% control ModuleProducts %><a href="$Link">$Title</a><% if Last %><% else %>, <% end_if %><% end_control %>.</li>
+				</ul>
+			<% end_if %>
 			</ul>
 		</li>
+		<% end_if %>
 	<% end_control %>
 	</ul>
 
@@ -84,8 +89,6 @@
 		<% end_if %>
 	<% end_if %>
 	</div>
-	<% else %>
-	You are not logged in.
 	<% end_if %>
 
 	<% if Form %><div id="FormHolder">$Form</div><% end_if %>

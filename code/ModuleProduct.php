@@ -152,8 +152,6 @@ class ModuleProduct extends Product {
 			array(
 				"To" => $to,
 				"Subject" => $subject,
-				"Link" => $link,
-				"Username" => $username,
 				"Body" => $body
 			)
 		);
@@ -166,7 +164,8 @@ class ModuleProduct extends Product {
 		$customisationArray = array(
 			"PageLink" => $pageLink,
 			"PasswordResetLink" => $passwordResetLink,
-			"LogInLink" => $LogInLink,
+			"LogInLink" => $logInLink,
+			"Title" => $this->Title
 		);
 		$body = $this->customise($customisationArray)->renderWith("ModuleProductEmailBody");
 		return $body;
