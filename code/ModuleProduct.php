@@ -141,13 +141,12 @@ class ModuleProduct extends Product {
 		$authorEmailArray = array();
 		if($authors = $this->Authors()) {
 			foreach($authors as $author) {
-				$authorEmailArray[] = $author->Email;
+				$authorEmailArray[$author->ScreenName] = $author->Email;
 			}
 		}
 		$to = implode(", ", $authorEmailArray);
-		$subject = _t("ModuleProduct.SUBJECT", "Check your modules");
-		$username = implode(" OR ", $authorEmailArray);
-		$body = $this->createBodyAppendix();
+		$subject = _t("ModuleProduct.SUBJECT", "Check your module:").$this->Title;
+		$body = $this->createBodyAppendix(implode(", ", $array_flip($authorEmailArray)));
 		return new ArrayData (
 			array(
 				"To" => $to,
@@ -157,7 +156,7 @@ class ModuleProduct extends Product {
 		);
 	}
 
-	protected function createBodyAppendix(){
+	protected function createBodyAppendix($screenName){
 		$pageLink = Director::absoluteURL($this->Link());
 		$passwordResetLink = Director::absoluteURL("Security/lostpassword");
 		$logInLink = Director::absoluteURL("Security/login");
@@ -165,7 +164,8 @@ class ModuleProduct extends Product {
 			"PageLink" => $pageLink,
 			"PasswordResetLink" => $passwordResetLink,
 			"LogInLink" => $logInLink,
-			"Title" => $this->Title
+			"Title" => $this->Title,
+			"ScreenName" => $screenName
 		);
 		$body = $this->customise($customisationArray)->renderWith("ModuleProductEmailBody");
 		return $body;
@@ -263,9 +263,7 @@ class ModuleProduct_Controller extends Product_Controller {
 		}
 	}
 
-	function EmailTo(){
 
-	}
 
 
 }

@@ -53,7 +53,7 @@
 			<% end_if %>
 			<% if ModuleProducts %>
 				<ul id="otherModules">
-					<li><strong>List of work: </strong><% control ModuleProducts %><a href="$Link">$Title</a><% if Last %><% else %>, <% end_if %><% end_control %>.</li>
+					<li><strong>Also developed:</strong> <% control ModuleProducts %><a href="$Link">$Title</a><% if Last %><% else %>, <% end_if %><% end_control %>.</li>
 				</ul>
 			<% end_if %>
 			</ul>

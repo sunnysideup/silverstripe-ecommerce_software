@@ -80,6 +80,14 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 			$this->ScreenName = $startScreenName."_".$i;
 		}
 	}
+
+	function ListOfModulesLink(){
+		$page = DataObject::get_one("ModuleProductGroup", "\"LevelOfProductsToShow = -1\"");
+		if($page) {
+			return $page->Link()."#".$this->owner->ScreenName;
+		}
+	}
+
 }
 
 

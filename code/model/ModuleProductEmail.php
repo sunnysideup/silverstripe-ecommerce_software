@@ -93,7 +93,6 @@ class ModuleProductEmail_Form extends Form  {
 		$email = new ModuleProductEmail();
 		$form->saveInto($email);
 		$email->write();
-		die(" saving ".$email->ID);
 		Director::redirect($page->Link());
 	}
 }
@@ -117,6 +116,23 @@ class ModuleProductEmail_RequiredFields extends RequiredFields {
 	*/
 	function php($data) {
 		$valid = true;
+		if(!isset($data["Subject"]) || (isset($data["Subject"]) && strlen($data["Subject"])) < 3) {
+			$errorMessage = _t("Form.PLEASEENTERASUBJECT", "Please enter a subject");
+			$this->validationError(
+				$fieldName = "Subject",
+				$errorMessage,
+				"required"
+			);
+			$valid = false;
+		}
+		if(!isset($data["To"]) || (isset($data["To"]) && strlen($data["To"]) < 3)) {
+			$errorMessage = _t("Form.PLEASEENTERANEMAIL", "Please enter an e=mail");
+			$this->validationError(
+				$fieldName = "To",
+				$errorMessage,
+				"required"
+			);
+		}
 		if(!$valid) {
 			return false;
 		}
