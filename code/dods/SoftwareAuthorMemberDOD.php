@@ -82,9 +82,9 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 	}
 
 	function ListOfModulesLink(){
-		$page = DataObject::get_one("ModuleProductGroup", "\"LevelOfProductsToShow = -1\"");
+		$page = DataObject::get_one("ModuleProductGroup", "\"LevelOfProductsToShow\" = -1");
 		if($page) {
-			return $page->Link()."#".$this->owner->ScreenName;
+			return $page->Link()."#author_".$this->owner->ScreenName;
 		}
 	}
 

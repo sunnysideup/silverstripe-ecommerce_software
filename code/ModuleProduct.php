@@ -146,7 +146,7 @@ class ModuleProduct extends Product {
 		}
 		$to = implode(", ", $authorEmailArray);
 		$subject = _t("ModuleProduct.SUBJECT", "Check your module:").$this->Title;
-		$body = $this->createBodyAppendix(implode(", ", $array_flip($authorEmailArray)));
+		$body = $this->createBodyAppendix(implode(", ", array_flip($authorEmailArray)));
 		return new ArrayData (
 			array(
 				"To" => $to,
