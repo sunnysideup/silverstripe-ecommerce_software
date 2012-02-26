@@ -26,3 +26,7 @@ h3.moduleH3, #EcommerceProductTags h3 {padding-top: 1.3em!important;margin-top:0
 td.label {text-align: left!important;}
 
 #ReadMeHolder {font-size: 0.57em; border-left: 5px solid #808383; padding-left: 5px;}
+
+#AddingModuleProduct_Form_Form input[type='text'] {width: 99%;}
+
+.tagList li {font-size: 0.77em;}
