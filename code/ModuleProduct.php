@@ -92,6 +92,20 @@ class ModuleProduct extends Product {
 	function getCMSFields(){
 		$fields = new FieldSet();
 		$fields = parent::getCMSFields();
+		$authors = $this->Authors();
+		$sortString = "";
+		if($authors) {
+			$authorsArray = $authors->map("ID", "ScreenName");
+			$sortString = "";
+			$sortStringEnd = "";
+			if(is_array($authorsArray) && count($authorsArray)) {
+				foreach($authorsArray as $ID => $ScreenName) {
+					$sortString .= "IF(Member.ID = $ID, 1, ";
+					$sortStringEnd .= ")";
+				}
+				$sortString .= " 0".$sortStringEnd." DESC";
+			}
+		}
 		$manyManyCTF = new ManyManyComplexTableField(
 			$controller = $this,
 			$name = "Authors",
@@ -99,7 +113,7 @@ class ModuleProduct extends Product {
 			$fieldList = null,
 			$detailFormFields = null,
 			$sourceFilter = "",
-			$sourceSort = "",
+			$sourceSort = $sortString ,
 			$sourceJoin = ""
 		);
 		$fields->addFieldToTab('Root.Content.Software', new TextField('Code','Code (this should be the same as the recommended folder name)'));

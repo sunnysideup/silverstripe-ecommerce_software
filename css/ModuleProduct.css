@@ -27,6 +27,6 @@ td.label {text-align: left!important;}
 
 #ReadMeHolder {font-size: 0.57em; border-left: 5px solid #808383; padding-left: 5px;}
 
-#AddingModuleProduct_Form_Form input[type='text'] {width: 99%;}
+#AddingModuleProduct_Form_Form input[type='text'], #AddingModuleProduct_Form_Form textarea {width: 98%; font-size: 0.77em; padding: 0.3em 0;}
 
 .tagList li {font-size: 0.77em;}

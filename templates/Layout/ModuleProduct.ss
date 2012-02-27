@@ -75,7 +75,13 @@
 
 	<% if Form %><div id="FormHolder">$Form</div><% end_if %>
 
-	<% if PageComments %><div id="PageCommentsHolder">$PageComments</div><% end_if %>
+
+	<% if PageComments %>
+		<div id="PageCommentsHolder">
+			<h3  class="moduleH3">Comments</h3>
+			$PageComments
+		</div>
+	<% end_if %>
 
 
 	<% if canEdit %>
