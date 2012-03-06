@@ -121,7 +121,9 @@ class AddingModuleProduct_Form extends Form  {
 		$page->Publish('Stage', 'Live');
 		$page->Status = "Published";
 		$page->flushCache();
-		$page->Authors()->addMany(array($member->ID => $member->ID));
+		if($page->Authors()->count() == 0 && $member) {
+			$page->Authors()->addMany(array($member->ID => $member->ID));
+		}
 		if(!isset( $data["EcommerceProductTags"]) || ! is_array( $data["EcommerceProductTags"]) || !count( $data["EcommerceProductTags"])) {
 			$data["EcommerceProductTags"] = array(-1 => -1);
 		}
