@@ -55,14 +55,27 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 		$field = $fields->fieldByName("GithubURL"); $field->setTitle("Github URL - e.g. https://github.com/mynamehere");
 		$field = $fields->fieldByName("SilverstripeDotOrgURL"); $field->setTitle("www.silverstripe.org URL - e.g. http://www.silverstripe.org/ForumMemberProfile/show/1");
 		$field = $fields->fieldByName("CompanyName"); $field->setTitle("Company Name (if any)");
-		$field = $fields->fieldByName("CompanyURL"); $field->setTitle("Company Link - e.g. http://www.the-company-i-work-for.com/");
+		$field = $fields->fieldByName("CompanyURL"); $field->setTitle("Company Link - e.g. http://www.the-company-i-work-for.co.nz/");
 		$field = $fields->fieldByName("AreYouHappyForPeopleToContactYou"); $field->setTitle("Are you happy to answer private questions about your code?");
 		$field = $fields->fieldByName("ContactDetailURL"); $field->setTitle("Contact Details URL - e.g. http://www.mysite.com/contact/");
 		$field = $fields->fieldByName("OtherURL"); $field->setTitle("other URL - e.g.  - e.g. http://www.mysite.com/about-me/");
 		$field = $fields->fieldByName("AreYouAvailableForPaidSupport"); $field->setTitle("Are you available for paid support?");
-		$field = $fields->fieldByName("Rate15Mins"); $field->setTitle("If applicable, how much do you charge (in $currency) for a fifteen minute skype chat?");
-		$field = $fields->fieldByName("Rate120Mins"); $field->setTitle("If applicable, how much do you charge (in $currency) for a two hour support block?");
-		$field = $fields->fieldByName("Rate480Mins"); $field->setTitle("If applicable, how much do you charge (in $currency) for a development day (eight hours)?");
+		$field = $fields->fieldByName("Rate15Mins"); $field->setTitle("If applicable, approximate charge (in $currency) for a fifteen minute skype chat?");
+		$field = $fields->fieldByName("Rate120Mins"); $field->setTitle("If applicable, approximate charge (in $currency) for a two hour support block?");
+		$field = $fields->fieldByName("Rate480Mins"); $field->setTitle("If applicable, approximate charge (in $currency) for a development day (eight hours)?");
+		if($modules = $this->owner->ModuleProducts()) {
+			$html = "<h3 id=\"ModuleListHeading\"><a href=\"".$this->ListOfModulesLink()).""\"Currently Listed Modules ...</a></h3><ul>";
+			foreach($modules as $module) {
+				if($module->ShowInSearch) {
+					$html .= "<li><a href=\"".$module->Link()."\">".$module->Title."</a></li>";
+				}
+			}
+			$html .= "</ul>";
+			$fields->push(new LiteralField("ModuleList", $html));
+		}
+		if(!isset($_REQUEST["Password"])) {
+			$fields->fieldByName("Password")->SetValue("");
+		}
 		Requirements::javascript("ecommerce_software/javascript/SoftwareAuthorMemberDOD.js");
 	}
 

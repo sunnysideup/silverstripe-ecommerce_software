@@ -35,7 +35,7 @@
 			<% if GithubURL %>, <a href="$GithubURL.URL">Git Hub Profile</a><% end_if %>
 			<% if SilverstripeDotOrgURL %>, <a href="$SilverstripeDotOrgURL.URL">Silverstripe.org profile</a><% end_if %>
 			<% if AreYouHappyForPeopleToContactYou %>
-				<h3  class="moduleH3">Contact Details</h3>
+				<p><strong>contact details</strong></p>
 				<ul>
 					<% if ContactDetailURL %><li><a href="$ContactDetailURL.URL">Contact details</a></li><% end_if %>
 					<% if OtherURL %><li><a href="$OtherURL.URL">More information</a></li><% end_if %>
@@ -84,7 +84,7 @@
 	<% end_if %>
 
 
-	<% if canEdit %>
+	<% if canEmail %>
 	<div id="EmailFormHolder">
 	<% if EmailObject %>
 		<h2>Emails sent</h2>

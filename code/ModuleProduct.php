@@ -78,6 +78,19 @@ class ModuleProduct extends Product {
 		return false;
 	}
 
+	function canDelete($member = null){
+		if($member = Member::currentMember()) {
+			if($member->IsShopAdmin()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function canEmail($member = null){
+		return $this->canDelete($member);
+	}
+
 	public static $searchable_fields = array(
 		'Title' => "PartialMatchFilter",
 		'InternalItemID' => "PartialMatchFilter",
@@ -174,12 +187,14 @@ class ModuleProduct extends Product {
 		$pageLink = Director::absoluteURL($this->Link());
 		$passwordResetLink = Director::absoluteURL("Security/lostpassword");
 		$logInLink = Director::absoluteURL("Security/login");
+		$editYourDetailsLink = DataObject::get_one("RegisterAndEditDetailsPage")->Link();
 		$customisationArray = array(
 			"PageLink" => $pageLink,
 			"PasswordResetLink" => $passwordResetLink,
 			"LogInLink" => $logInLink,
 			"Title" => $this->Title,
-			"ScreenName" => $screenName
+			"ScreenName" => $screenName,
+			"EditYourDetailsLink" => $editYourDetailsLink
 		);
 		$body = $this->customise($customisationArray)->renderWith("ModuleProductEmailBody");
 		return $body;

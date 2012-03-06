@@ -32,9 +32,12 @@ ModuleProduct = {
 				var text = jQuery("#" + id+ " pre").text();
 				var html = converter.makeHtml(text);
 				jQuery("#" + id).html(html).slideDown();
+				jQuery(this).unbind('click');
 				jQuery(this).click(
 					function(e) {
 						e.preventDefault();
+						var id = jQuery(this).attr("rel");
+						jQuery("#" + id).slideToggle();
 					}
 				);
 			}

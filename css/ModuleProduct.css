@@ -30,3 +30,5 @@ td.label {text-align: left!important;}
 #AddingModuleProduct_Form_Form input[type='text'], #AddingModuleProduct_Form_Form textarea {width: 98%; font-size: 0.77em; padding: 0.3em 0;}
 
 .tagList li {font-size: 0.77em;}
+
+#AddingModuleProduct_Form_Form p.checkbox label.right {width: auto;}
