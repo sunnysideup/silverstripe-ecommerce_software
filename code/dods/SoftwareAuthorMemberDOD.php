@@ -71,7 +71,7 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 				}
 			}
 			$html .= "</ul>";
-			$fields->push(new ReadonlyField("ModuleList", "Currently Listed Modules", $html));
+			$fields->push(new LiteralField("ModuleList", $html));
 		}
 		Requirements::javascript("ecommerce_software/javascript/SoftwareAuthorMemberDOD.js");
 	}
