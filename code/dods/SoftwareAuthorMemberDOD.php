@@ -64,14 +64,8 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 		$field = $fields->fieldByName("Rate120Mins"); $field->setTitle("If applicable, approximate charge (in $currency) for a two hour support block?");
 		$field = $fields->fieldByName("Rate480Mins"); $field->setTitle("If applicable, approximate charge (in $currency) for a development day (eight hours)?");
 		if($modules = $this->owner->ModuleProducts()) {
-			$html = "<h3 id=\"ModuleListHeading\"><a href=\"".$this->ListOfModulesLink()."\">Currently Listed Modules ...</a></h3><ul>";
-			foreach($modules as $module) {
-				if($module->ShowInSearch) {
-					$html .= "<li><a href=\"".$module->Link()."\">".$module->Title."</a></li>";
-				}
-			}
-			$html .= "</ul>";
-			$fields->push(new LiteralField("ModuleList", $html));
+			$html = "<a href=\"".$this->ListOfModulesLink()."\">your currently listed modules</a>";
+			$fields->push(new ReadonlyField("ModuleList", "Currently Listed Modules", $html));
 		}
 		Requirements::javascript("ecommerce_software/javascript/SoftwareAuthorMemberDOD.js");
 	}
