@@ -172,7 +172,7 @@ class ModuleProduct extends Product {
 			}
 		}
 		$to = implode(", ", $authorEmailArray);
-		$subject = _t("ModuleProduct.SUBJECT", "Check your module:").$this->Title;
+		$subject = _t("ModuleProduct.SUBJECT", "Please check your module: ").$this->Title;
 		$body = $this->createBodyAppendix(implode(", ", array_flip($authorEmailArray)));
 		return new ArrayData (
 			array(
@@ -187,7 +187,7 @@ class ModuleProduct extends Product {
 		$pageLink = Director::absoluteURL($this->Link());
 		$passwordResetLink = Director::absoluteURL("Security/lostpassword");
 		$logInLink = Director::absoluteURL("Security/login");
-		$editYourDetailsLink = DataObject::get_one("RegisterAndEditDetailsPage")->Link();
+		$editYourDetailsLink = Director::absoluteURL(DataObject::get_one("RegisterAndEditDetailsPage")->Link());
 		$customisationArray = array(
 			"PageLink" => $pageLink,
 			"PasswordResetLink" => $passwordResetLink,
