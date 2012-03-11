@@ -75,11 +75,14 @@
 
 	<% if Form %><div id="FormHolder">$Form</div><% end_if %>
 
-
 	<% if PageComments %>
 		<div id="PageCommentsHolder">
 			<h3  class="moduleH3">Comments</h3>
+			<% if Member %>
+			<p>To view previous comments and have your own say, please <a href="Security/login?BackURL=$Link">log in</a>.</p>
+			<% else %>
 			$PageComments
+			<% end_if %>
 		</div>
 	<% end_if %>
 
