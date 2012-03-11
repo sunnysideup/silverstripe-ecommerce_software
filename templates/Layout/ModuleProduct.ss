@@ -27,9 +27,7 @@
 	<% control Authors %><% if IsAdmin %><% else %>
 		<li class="infoItem $FirstLast">
 			<strong>
-				<% if ListOfModulesLink %><a href="$ListOfModulesLink"><% end_if %>
-				<% if ScreenName %>$ScreenName<% else %>$FirstName <% end_if %>
-				<% if ListOfModulesLink %></a><% end_if %>
+				<% if ListOfModulesLink %><a href="$ListOfModulesLink"><% end_if %><% if ScreenName %>$ScreenName<% else %>$FirstName<% end_if %><% if ListOfModulesLink %></a><% end_if %>
 			</strong>
 			<% if CompanyName %>(<% if CompanyURL %><a href="$CompanyURL.URL"><% end_if %>$CompanyName<% if CompanyURL %></a><% end_if %>)<% end_if %>
 			<% if GithubURL %>, <a href="$GithubURL.URL">Git Hub Profile</a><% end_if %>
