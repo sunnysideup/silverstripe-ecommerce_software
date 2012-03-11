@@ -14,7 +14,7 @@
 
 	<% if ReadMeContent %>
 	<h3  class="moduleH3">read me</h3>
-	<p>The content of the <a href="$ReadMeURL.URL">README.md</a> has been extracted. You can <a href="#ReadMeHolder" class="md2html" rel="ReadMeHolder">view this converted to html</a>.</p>
+	<p>The content of the <a href="$ReadMeURL.URL">README.md</a> file has been extracted. You can <a href="#ReadMeHolder" class="md2html" rel="ReadMeHolder">view this below</a>.</p>
 	<div id="ReadMeHolder">
 
 		<pre>$ReadMeContent</pre>
