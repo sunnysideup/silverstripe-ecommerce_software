@@ -74,7 +74,41 @@ ModuleProductGroup = {
 		jQuery("#ModuleSearchForm input.action").hide();
 		jQuery("#ModuleSearchForm #Search input").keydown(
 			function(event) {
-				if(event.which == 13) {
+				if(event.which == 13 || event.which == 9) {
+					event.preventDefault();
+					phrase = jQuery(this).val();
+					if(phrase.length > 2) {
+						url = jQuery(this).parents("form").attr('action');
+						jQuery("#Search").addClass("loading");
+						jQuery(".tags a, #SidebarModuleProductGroupTags a").removeClass("current");
+						jQuery.getJSON(
+							url,
+							{
+								Search: escape(phrase),
+								action_modulesearchformresults: "Filter"
+							},
+							function(data){
+								jQuery("#Search").removeClass("loading");
+								if(data.ModuleProducts && data.ModuleProducts.length > 0) {
+									jQuery(".productList > li").hide();
+									for(i = 0; i < data.ModuleProducts.length; i++) {
+										var selector= "li#ModuleProductID" + data.ModuleProducts[i];
+										jQuery(selector).show();
+										jQuery("#SidebarModuleProductGroupTags li.showAll").show();
+									}
+								}
+								else {
+									alert("no modules found");
+									jQuery("#ModuleSearchForm #Search input").focus();
+									jQuery(".productList > li").show();
+								}
+							}
+						);
+					}
+					else {
+						jQuery("#ModuleSearchForm #Search input").focus();
+						jQuery(".productList > li").show();
+					}
 					return false;
 				}
 			}
@@ -94,43 +128,6 @@ ModuleProductGroup = {
 		);
 		//why is this here?
 		jQuery("#ModuleSearchForm #Search input").keyup();
-		jQuery("#ModuleSearchForm #Search input").change(
-			function() {
-				phrase = jQuery(this).val();
-				if(phrase.length > 2) {
-					url = jQuery(this).parents("form").attr('action');
-					jQuery("#Search").addClass("loading");
-					jQuery(".tags a, #SidebarModuleProductGroupTags a").removeClass("current");
-					jQuery.getJSON(
-						url,
-						{
-							Search: escape(phrase),
-							action_modulesearchformresults: "Filter"
-						},
-						function(data){
-							jQuery("#ModuleSearchForm").removeClass("loading");
-							if(data.ModuleProducts && data.ModuleProducts.length > 0) {
-								jQuery(".productList > li").hide();
-								for(i = 0; i < data.ModuleProducts.length; i++) {
-									var selector= "li#ModuleProductID" + data.ModuleProducts[i];
-									jQuery(selector).show();
-									jQuery("#SidebarModuleProductGroupTags li.showAll").show();
-								}
-							}
-							else {
-								alert("no modules found");
-								jQuery("#ModuleSearchForm #Search input").focus();
-								jQuery(".productList > li").show();
-							}
-						}
-					);
-				}
-				else {
-					jQuery("#ModuleSearchForm #Search input").focus();
-					jQuery(".productList > li").show();
-				}
-			}
-		);
 	},
 
 	filterFor: function(tag) {

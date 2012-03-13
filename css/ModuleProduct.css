@@ -32,3 +32,8 @@ td.label {text-align: left!important;}
 .tagList li {font-size: 0.77em;}
 
 #AddingModuleProduct_Form_Form p.checkbox label.right {width: auto;}
+
+.loading input {background: url('/ecommerce/images/loading.gif') no-repeat top left transparent;}
+
+.productList {padding-left: 0px!important; margin-left: 0px!important;}
+.productList li {list-style-image: none; padding-left: 0px!important; margin-left: 0px!important}
