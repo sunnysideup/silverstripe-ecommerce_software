@@ -71,7 +71,12 @@
 
 	<% include OtherProductInfo %>
 
-	<% if Form %><div id="FormHolder">$Form</div><% end_if %>
+	<% if Form %>
+	<div id="FormHolder">$Form</div>
+	<% else %>
+	<h3  class="moduleH3">Edit this page</h3>
+	<p>Please <a href="Security/login/?BackURL=$URLSegment">log in</a> to edit this module.</p>
+	<% end_if %>
 
 	<% if PageComments %>
 		<div id="PageCommentsHolder">

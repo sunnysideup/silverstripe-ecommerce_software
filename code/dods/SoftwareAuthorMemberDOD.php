@@ -89,6 +89,7 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 			$i++;
 			$this->ScreenName = $startScreenName."_".$i;
 		}
+		$this->owner->Locale = "en_GB";
 	}
 
 	function ListOfModulesLink(){

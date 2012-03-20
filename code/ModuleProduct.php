@@ -220,7 +220,6 @@ class ModuleProduct_Controller extends Product_Controller {
 	}
 
 	function ReadMeContent() {
-
 		if($this->ReadMeURL){
 			$this->ReadMeURL = str_replace("http://raw.github", "https://raw.github", $this->ReadMeURL);
 			if($this->url_exists($this->ReadMeURL)) {
@@ -232,9 +231,8 @@ class ModuleProduct_Controller extends Product_Controller {
 	function url_exists($url) {
 		// Version 4.x supported
 		$handle   = curl_init($url);
-		if (false === $handle)
-		{
-				return false;
+		if (false === $handle){
+			return false;
 		}
 		curl_setopt($handle, CURLOPT_HEADER, false);
 		curl_setopt($handle, CURLOPT_FAILONERROR, true);  // this works

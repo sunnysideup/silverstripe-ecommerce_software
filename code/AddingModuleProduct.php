@@ -50,6 +50,7 @@ class AddingModuleProduct_Form extends Form  {
 		if($moduleProductID) {
 			$fields->push(new HeaderField('AddEditModule','Edit '.$controller->dataRecord->Title, 2));
 			$fields->push(new HiddenField('ModuleProductID',$moduleProductID, $moduleProductID));
+			$moduleProduct = DataObject::get_by_id("ModuleProduct", $moduleProductID);
 		}
 		else {
 			$fields->push(new HeaderField('AddEditModule',$controller->dataRecord->Title, 2));
@@ -81,6 +82,14 @@ class AddingModuleProduct_Form extends Form  {
 		$member = Member::currentMember();
 		if($member->IsAdmin()) {
 			$fields->push(new CheckboxSetField('Authors','Author(s)', DataObject::get("Member", "Email <> '' AND Email IS NOT NULL")->toDropDownMap('ID','Email')));
+			if($moduleProduct) {
+				if($authors = $moduleProduct->Authors()) {
+					$authorsIDArray = $authors->map("ID","ID");
+					$authorsIDArray[0] = 0;
+					$fields->push($this->ManyManyComplexTableFieldAuthorsField($controller, $authorsIDArray));
+					//$controller, $name, $sourceClass, $fieldList = null, $detailFormFields = null, $sourceFilter = "", $sourceSort = "", $sourceJoin = ""
+				}
+			}
 			$fields->push(new DropdownField('ParentID','Move to', DataObject::get("ProductGroup")->toDropDownMap('ID','MenuTitle')));
 		}
 
@@ -148,6 +157,24 @@ class AddingModuleProduct_Form extends Form  {
 		}
 		Director::redirectBack();
 	}
+
+
+	protected function ManyManyComplexTableFieldAuthorsField($controller, $authorsIDArray) {
+		$field = new ManyManyComplexTableField(
+			$controller, //controller
+			'Authors', //name
+			'Member', //sourceClass
+			null,//fieldList
+			null,//detailFormFields
+			"",//sourceFilter
+			"IF(\"Member\".\"ID\" IN (".implode(",", $authorsIDArray)."), 0, 99)",//sourceSort
+			null//sourceJoin
+		);
+		$field->setPopupCaption("Edit Author");
+		$field->setAddTitle("Author");
+		return $field;
+	}
+
 }
 
 class AddingModuleProduct_RequiredFields extends RequiredFields {
