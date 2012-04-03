@@ -155,7 +155,12 @@ class AddingModuleProduct_Form extends Form  {
 		if(is_array($data["EcommerceProductTags"]) && count($data["EcommerceProductTags"])) {
 			$page->EcommerceProductTags()->addMany($data["EcommerceProductTags"]);
 		}
-		Director::redirectBack();
+		if(Director::is_ajax()) {
+			return $page->renderWith("ModuleProductInner");
+		}
+		else {
+			Director::redirectBack();
+		}
 	}
 
 
@@ -166,8 +171,8 @@ class AddingModuleProduct_Form extends Form  {
 			'Member', //sourceClass
 			null,//fieldList
 			null,//detailFormFields
-			"",//sourceFilter
-			"IF(\"Member\".\"ID\" IN (".implode(",", $authorsIDArray)."), 0, 99)",//sourceSort
+			"\"Member\".\"ID\" IN (".implode(",", $authorsIDArray).")",//sourceFilter
+			"",//sourceSort
 			null//sourceJoin
 		);
 		$field->setPopupCaption("Edit Author");

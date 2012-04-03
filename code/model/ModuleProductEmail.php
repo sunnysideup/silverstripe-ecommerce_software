@@ -93,7 +93,12 @@ class ModuleProductEmail_Form extends Form  {
 		$email = new ModuleProductEmail();
 		$form->saveInto($email);
 		$email->write();
-		Director::redirect($page->Link());
+		if(Director::is_ajax()) {
+			return "mail sent!";
+		}
+		else {
+			Director::redirect($page->Link());
+		}
 	}
 }
 

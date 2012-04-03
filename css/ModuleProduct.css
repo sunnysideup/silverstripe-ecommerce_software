@@ -6,7 +6,7 @@ li.infoItem span.value {}
 
 
 /* group */
-.moreInfoLink {font-weight: bold;}
+.moreInfoLink {font-weight: bold; text-transform: lowercase;}
 .explanation {font-size: 0.77em;}
 .tags {font-size: 0.77em;}
 .tags .current, #SidebarModuleProductGroupTags a.current {font-size: 1.23em; color: #317010;}
@@ -37,3 +37,4 @@ td.label {text-align: left!important;}
 
 .productList {padding-left: 0px!important; margin-left: 0px!important;}
 .productList li {list-style-image: none; padding-left: 0px!important; margin-left: 0px!important}
+ul.checkboxsetfield {-moz-column-width: 10em!important; column-width: 10em!important; -webkit-column-width: 10em!important;}
