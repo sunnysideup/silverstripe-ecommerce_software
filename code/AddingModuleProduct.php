@@ -82,25 +82,21 @@ class AddingModuleProduct_Form extends Form  {
 		$member = Member::currentMember();
 		if($member->IsAdmin()) {
 			$fields->push(new CheckboxSetField('Authors','Author(s)', DataObject::get("Member", "Email <> '' AND Email IS NOT NULL")->toDropDownMap('ID','Email')));
-			if($moduleProduct) {
-				if($authors = $moduleProduct->Authors()) {
-					$authorsIDArray = $authors->map("ID","ID");
-					$authorsIDArray[0] = 0;
-					$fields->push($this->ManyManyComplexTableFieldAuthorsField($controller, $authorsIDArray));
-					//$controller, $name, $sourceClass, $fieldList = null, $detailFormFields = null, $sourceFilter = "", $sourceSort = "", $sourceJoin = ""
-				}
-			}
 			$fields->push(new DropdownField('ParentID','Move to', DataObject::get("ProductGroup")->toDropDownMap('ID','MenuTitle')));
 		}
-
+		if($moduleProduct && $moduleProduct->canEdit()) {
+			if($authors = $moduleProduct->Authors()) {
+				$authorsIDArray = $authors->map("ID","ID");
+				$authorsIDArray[0] = 0;
+				$fields->push($this->ManyManyComplexTableFieldAuthorsField($controller, $authorsIDArray));
+				//$controller, $name, $sourceClass, $fieldList = null, $detailFormFields = null, $sourceFilter = "", $sourceSort = "", $sourceJoin = ""
+			}
+		}
 		$actions = new FieldSet(new FormAction("submit", "submit"));
 		$validator = new AddingModuleProduct_RequiredFields($moduleProductID, array('Code', 'Name', 'ParentID', 'MainURL'));
 		parent::__construct($controller, $name, $fields, $actions, $validator);
-		if($moduleProductID) {
-			$moduleProduct = DataObject::get_by_id("ModuleProduct", $moduleProductID);
-			if($moduleProduct) {
-				$this->loadDataFrom($moduleProduct);
-			}
+		if($moduleProduct) {
+			$this->loadDataFrom($moduleProduct);
 		}
 		return $this;
 	}
@@ -165,12 +161,28 @@ class AddingModuleProduct_Form extends Form  {
 
 
 	protected function ManyManyComplexTableFieldAuthorsField($controller, $authorsIDArray) {
+		$detailFields = new FieldSet();
+		$detailFields->push(new TextField("ScreenName"));
+		$detailFields->push(new TextField("FirstName"));
+		$detailFields->push(new TextField("Surname"));
+		$detailFields->push(new TextField("Email"));
+		$detailFields->push(new TextField("GithubURL", "Github URL"));
+		$detailFields->push(new TextField("SilverstripeDotOrgURL", "www.silverstripe.org URL"));
+		$detailFields->push(new TextField("CompanyName", "Company Name"));
+		$detailFields->push(new TextField("CompanyURL", "Company URL"));
+		$detailFields->push(new CheckboxField("AreYouHappyForPeopleToContactYou", "are you happy for people to contact you about your module?"));
+		$detailFields->push(new TextField("ContactDetailURL", "Contact details URL"));
+		$detailFields->push(new TextField("OtherURL", "Other URL"));
+		$detailFields->push(new CheckboxField("AreYouAvailableForPaidSupport", "are you available for paid support?"));
+		$detailFields->push(new NumericField("Rate15Mins", "Indicative rate for 15 minute skype chat"));
+		$detailFields->push(new NumericField("Rate120Mins", "Indicative rate for two hour work slot"));
+		$detailFields->push(new NumericField("Rate480Mins", "Indicative rate for one day of work"));
 		$field = new ManyManyComplexTableField(
 			$controller, //controller
 			'Authors', //name
 			'Member', //sourceClass
 			null,//fieldList
-			null,//detailFormFields
+			$detailFields,//detailFormFields
 			"\"Member\".\"ID\" IN (".implode(",", $authorsIDArray).")",//sourceFilter
 			"",//sourceSort
 			null//sourceJoin
