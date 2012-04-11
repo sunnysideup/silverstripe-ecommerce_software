@@ -304,7 +304,7 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 		$member = Member::currentMember();
 		$dos = new DataObjectSet();
 		if($member && $member->IsAdmin()) {
-			$modules = DataObject::get("ModuleProduct");
+			$modules = DataObject::get("ModuleProduct", "\"ShowInSearch\" = 1 AND \"ShowInMenus\" = 1");
 			foreach($modules as $module) {
 				if(!$module->HasEmail() || !$module->HasMemberContact()) {
 					$i++;
