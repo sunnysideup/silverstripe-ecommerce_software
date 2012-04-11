@@ -50,7 +50,7 @@ ModuleProduct = {
 	editForm: function() {
 		var options = {
 			target: '#ModuleProductInnerHolder',   // target element(s) to be updated with server response
-			beforeSubmit:  function(){jQuery("#LayoutHolder").html("saving ...");}  // pre-submit callback
+			beforeSubmit:  function(){jQuery("#ModuleProductInnerHolder").html("updating ...");}  // pre-submit callback
 		};
 
 		// bind to the form's submit event

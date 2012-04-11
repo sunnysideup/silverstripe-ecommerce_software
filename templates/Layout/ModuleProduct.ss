@@ -6,6 +6,21 @@
 
 	<div id="ModuleProductInnerHolder"><% include ModuleProductInner %></div>
 
+	<% if canEmail %>
+	<div id="EmailFormHolder">
+	<% if EmailObject %>
+		<h2>Emails sent</h2>
+		<p>Email has been sent to $EmailObject.To (subject: $EmailObject.Subject).</p>
+	<% else %>
+		<% if EmailForm %>
+			<h2>E-mail Authors</h2>
+			$EmailForm
+		<% else %>
+		<% end_if %>
+	<% end_if %>
+	</div>
+	<% end_if %>
+
 	<% if Form %>
 	<div id="FormHolder">$Form</div>
 	<% else %>
@@ -21,20 +36,7 @@
 	<% end_if %>
 
 
-	<% if canEmail %>
-	<div id="EmailFormHolder">
-	<% if EmailObject %>
-		<h2>Emails sent</h2>
-		<p>Email has been sent to $EmailObject.To (subject: $EmailObject.Subject).</p>
-	<% else %>
-		<% if EmailForm %>
-			<h2>E-mail Authors</h2>
-			$EmailForm
-		<% else %>
-		<% end_if %>
-	<% end_if %>
-	</div>
-	<% end_if %>
+
 
 
 </div>

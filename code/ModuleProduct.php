@@ -144,6 +144,29 @@ class ModuleProduct extends Product {
 		return $fields;
 	}
 
+
+	/**
+	 * return the first Author
+	 * @return Int
+	 */
+	public function DefaultMemberID(){
+		$memberID = 0;
+		if($authors = $this->Authors()) {
+			$memberID = $authors->First()->ID;
+		}
+		return $memberID;
+	}
+
+
+	/**
+	 * Has an email been sent?
+	 * @return Boolean
+	 *
+	 */
+	public function HasMemberContact(){
+		return DataObject::get_one("ModuleProductEmail", "\"MemberID\" = ".$this->DefaultMemberID());
+	}
+
 	/**
 	 * Has an email been sent?
 	 * @return Boolean
@@ -166,14 +189,21 @@ class ModuleProduct extends Product {
 	public function EmailDefaults(){
 		$to = "";
 		$authorEmailArray = array();
+		$authorFirstNameArray = array();
 		if($authors = $this->Authors()) {
 			foreach($authors as $author) {
 				$authorEmailArray[$author->ScreenName] = $author->Email;
+				if($author->FirstName) {
+					$authorFirstNameArray[$author->ScreenName] = $author->FirstName;
+				}
+				else {
+					$authorFirstNameArray[$author->ScreenName] = $author->ScreenName;
+				}
 			}
 		}
 		$to = implode(", ", $authorEmailArray);
 		$subject = _t("ModuleProduct.SUBJECT", "Please check your module: ").$this->Title;
-		$body = $this->createBodyAppendix(implode(", ", array_flip($authorEmailArray)));
+		$body = $this->createBodyAppendix(implode(", ", $authorFirstNameArray));
 		return new ArrayData (
 			array(
 				"To" => $to,

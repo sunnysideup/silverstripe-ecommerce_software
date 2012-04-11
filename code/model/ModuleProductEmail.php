@@ -20,7 +20,8 @@ class ModuleProductEmail extends DataObject {
 	);
 
 	public static $has_one = array(
-		"ModuleProduct" => "ModuleProduct"
+		"ModuleProduct" => "ModuleProduct",
+		"Member" => "Member"
 	);
 
 	public static $singular_name = "Module Email";
@@ -65,6 +66,7 @@ class ModuleProductEmail_Form extends Form  {
 		$fields->push(new TextField('To','To', $defaults->To));
 		$fields->push(new TextField('Subject','Subject', $defaults->Subject));
 		$fields->push(new HiddenField('ModuleProductID','ModuleProductID', $moduleProduct->ID));
+		$fields->push(new HiddenField('MemberID','memberID', $moduleProduct->DefaultMemberID()));
 		$fields->push(new HTMLEditorField('Body','Body', $defaults->Body));
 		$actions = new FieldSet(new FormAction("submit", "submit"));
 		$validator = new ModuleProductEmail_RequiredFields(array("Subject"));
@@ -75,7 +77,7 @@ class ModuleProductEmail_Form extends Form  {
 
 	function submit($data, $form) {
 		$member = Member::currentMember();
-		if(!$member && !$member->IsAdmin()) {
+		if(!$member || !$member->IsAdmin()) {
 			$form->setMessage("You need to be logged as an admin to send this email.", "bad");
 			Director::redirectBack();
 			return;

@@ -295,4 +295,26 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 	}
 
 
+	function introemails(){
+		$i = 0;
+		$member = Member::currentMember();
+		$dos = new DataObjectSet();
+		if($member && $member->IsAdmin()) {
+			$modules = DataObject::get("ModuleProduct");
+			foreach($modules as $module) {
+				if(!$module->HasEmail() || !$module->HasMemberContact()) {
+					$i++;
+					if($i < 10) {
+						$dos->push($module);
+					}
+					else {
+						break;
+					}
+				}
+			}
+			return $this->customise(array("Products" => $dos));
+		}
+		Security::permissionFailure($this, "You need to log in as an Administrator.");
+	}
+
 }

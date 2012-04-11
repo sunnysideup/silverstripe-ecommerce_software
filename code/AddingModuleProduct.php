@@ -181,7 +181,12 @@ class AddingModuleProduct_Form extends Form  {
 			$controller, //controller
 			'Authors', //name
 			'Member', //sourceClass
-			null,//fieldList
+			array(
+				"ScreenName" => "Screen name",
+				"FirstName" => "First name",
+				"Surname" => "Surname",
+				"Email" => "Email"
+				),//fieldList
 			$detailFields,//detailFormFields
 			"\"Member\".\"ID\" IN (".implode(",", $authorsIDArray).")",//sourceFilter
 			"",//sourceSort
