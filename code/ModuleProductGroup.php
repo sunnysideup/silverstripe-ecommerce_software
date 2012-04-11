@@ -294,7 +294,11 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 		return $this->customise(array("Products" => $data["Results"]));
 	}
 
-
+	/**
+	 * Admin ONLY action
+	 * to view a list of all developers
+	 * that have not been contacted yet
+	 */
 	function introemails(){
 		$i = 0;
 		$member = Member::currentMember();
