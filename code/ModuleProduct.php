@@ -151,7 +151,7 @@ class ModuleProduct extends Product {
 	 */
 	public function DefaultMemberID(){
 		$memberID = 0;
-		$authors = $this->Authors()
+		$authors = $this->Authors();
 		if($authors && $authors->count()) {
 			$memberID = $authors->First()->ID;
 		}
