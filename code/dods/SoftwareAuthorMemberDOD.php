@@ -9,6 +9,18 @@
 
 class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 
+	protected static $register_group_title = "Software Authors";
+		function set_register_group_title($s) {self::$register_group_title = $s;}
+		function get_register_group_title() {return self::$register_group_title;}
+
+	protected static $register_group_code = "softwareauthors";
+		function set_register_group_code($s) {self::$register_group_code = $s;}
+		function get_register_group_code() {return self::$register_group_code;}
+
+	protected static $register_group_access_key = "SOFTWAREAUTHORS";
+		function set_register_group_access_key($s) {self::$register_group_access_key = $s;}
+		function get_register_group_access_key() {return self::$register_group_access_key;}
+
 	function extraStatics () {
 		return array(
 			"db" => array(
@@ -98,6 +110,9 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 			return $page->Link()."#author_".$this->owner->ScreenName;
 		}
 	}
+
+
+
 
 }
 

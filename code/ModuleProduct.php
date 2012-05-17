@@ -231,6 +231,36 @@ class ModuleProduct extends Product {
 		return $body;
 	}
 
+	function requireDefaultRecords(){
+		$group = DataObject::get_one("Group", "\"Code\" = '".SoftwareAuthorMemberDOD::get_register_group_code()."'");
+		if($group) {
+			$members = $group->Members();
+			if($members) {
+				foreach($members as $member) {
+					if($member->ModuleProducts() && $member->ModuleProducts()->count()) {
+						DB::alteration_message("The following member own modules so will not be deleted ...".$member->Email.": ".$member->Title, "created");
+					}
+					else {
+						DB::alteration_message("The following member does not seem to have any module products ...".$member->Email.": ".$member->Title, "deleted");
+						if(!$member->IsAdmin()) {
+							$member->delete();
+						}
+						else {
+							DB::alteration_message("The following member is an Admin so will not be deleted ...".$member->Email.": ".$member->Title, "created");
+						}
+					}
+				}
+			}
+			else {
+				DB::alteration_message("could not find members for group with code = ".self::get_register_group_code(), "deleted");
+			}
+		}
+		else {
+			DB::alteration_message("could not find group with code = ".self::get_register_group_code(), "deleted");
+		}
+	}
+
+
 }
 
 

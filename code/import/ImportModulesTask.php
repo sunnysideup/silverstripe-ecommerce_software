@@ -12,15 +12,6 @@ class ImportModulesTask extends BuildTask{
 		function get_data_source() {return self::$data_source;}
 		function set_data_source($s) {self::$data_source = $s;}
 
-	static $register_group_title = "Software Authors";
-		function set_register_group_title($s) {self::$register_group_title = $s;}
-
-	static $register_group_code = "softwareauthors";
-		function set_register_group_code($s) {self::$register_group_code = $s;}
-
-	static $register_group_access_key = "SOFTWAREAUTHORS";
-		function set_register_group_access_key($s) {self::$register_group_access_key = $s;}
-
 	function getTitle() {
 		return "Import modules from csv";
 	}
@@ -81,16 +72,16 @@ class ImportModulesTask extends BuildTask{
 
 	private function createAuthorGroup(){
 
-		if(!$group = DataObject::get_one("Group", "Code = '".self::$register_group_code."'")) {
+		if(!$group = DataObject::get_one("Group", "Code = '".SoftwareAuthorMemberDOD::get_register_group_code()."'")) {
 			$group = new Group();
-			$group->Code = self::$register_group_code;
-			$group->Title = self::$register_group_title;
+			$group->Code = SoftwareAuthorMemberDOD::get_register_group_code();
+			$group->Title = SoftwareAuthorMemberDOD::get_register_group_title();
 			$group->write();
-			Permission::grant( $group->ID, self::$register_group_access_key);
-			DB::alteration_message("GROUP: ".self::$register_group_code.' ('.self::$register_group_title.')' ,"created");
+			Permission::grant( $group->ID, SoftwareAuthorMemberDOD::get_register_group_access_key());
+			DB::alteration_message("GROUP: ".SoftwareAuthorMemberDOD::get_register_group_code().' ('.SoftwareAuthorMemberDOD::get_register_group_title().')' ,"created");
 		}
-		elseif(DB::query("SELECT * FROM Permission WHERE GroupID = ".$group->ID." AND Code = '".self::$register_group_access_key."'")->numRecords() == 0) {
-			Permission::grant($group->ID, self::$register_group_access_key);
+		elseif(DB::query("SELECT * FROM Permission WHERE GroupID = ".$group->ID." AND Code = '".SoftwareAuthorMemberDOD::get_register_group_access_key()."'")->numRecords() == 0) {
+			Permission::grant($group->ID, SoftwareAuthorMemberDOD::get_register_group_access_key());
 		}
 	}
 
@@ -105,7 +96,7 @@ class ImportModulesTask extends BuildTask{
 		else {
 			$parentID = 0;
 		}
-		$group = DataObject::get_one("Group", "Code = '".self::$register_group_code."'");
+		$group = DataObject::get_one("Group", "Code = '".SoftwareAuthorMemberDOD::get_register_group_code()."'");
 		if(!$group) {
 			user_error("Group for authors could not be found!");
 		}
