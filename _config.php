@@ -9,6 +9,9 @@
 //===================---------------- START ecommerce_software MODULE ----------------===================
 //MUST SET
 //Object::add_extension('Member', 'SoftwareAuthorMemberDOD');
+//Object::add_extension("EcommerceDatabaseAdmin", "ImportModulesTask_AdminDecorator");
+//ImportModulesTask::set_data_source("/data/importme.csv");
+
 //MAY SET
 //ProductsAndGroupsModelAdmin::add_managed_model("ModuleProduct");
 //ModuleProductGroup::remove_sort_option("default");
