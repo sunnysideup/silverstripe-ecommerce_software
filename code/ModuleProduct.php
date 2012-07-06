@@ -125,7 +125,7 @@ class ModuleProduct extends Product {
 			$sourceClass = "Member",
 			$fieldList = null,
 			$detailFormFields = null,
-			$sourceFilter = "",
+			$sourceFilter = "\"Email\" ",
 			$sourceSort = $sortString ,
 			$sourceJoin = ""
 		);
