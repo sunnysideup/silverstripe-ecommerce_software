@@ -129,6 +129,7 @@ class ModuleProduct extends Product {
 			$sourceSort = $sortString ,
 			$sourceJoin = ""
 		);
+		$manyManyCTF->setPageSize(50);
 		$fields->addFieldToTab('Root.Content.Software', new TextField('Code','Code (this should be the same as the recommended folder name)'));
 		$fields->addFieldToTab('Root.Content.Software', new TextareaField('MetaDescription','Three sentence introduction', 3));
 		$fields->addFieldToTab('Root.Content.Software', new TextField('MainURL','Link to home page for the module - e.g. http://www.mymodule.com/'));
@@ -138,8 +139,12 @@ class ModuleProduct extends Product {
 		$fields->addFieldToTab('Root.Content.Software', new TextField('GitURL','Link to the GIT URL - e.g. https://github.com/my-git-username/silverstripe-my-module'));
 		$fields->addFieldToTab('Root.Content.Software', new TextField('OtherURL','Link to other repository or download URL - e.g. http://www.mymodule.com/downloads/'));
 		$fields->addFieldToTab('Root.Content.Software', new ReadonlyField('ImportID','Import Identifier'));
+		$fields->addFieldToTab('Root.Content.Software', new HeaderField("AuthorsHeading", "Authors"));
 		if($this->ID) {
-			$fields->addFieldToTab('Root.Content.Authors', $manyManyCTF);
+			$fields->addFieldToTab('Root.Content.Software', $manyManyCTF);
+		}
+		else {
+			$fields->addFieldToTab('Root.Content.Software', new LiteralField("AuthorsEXPLANANTION", "<p>Once saved, you can select the authors here.</p>"));
 		}
 		return $fields;
 	}
