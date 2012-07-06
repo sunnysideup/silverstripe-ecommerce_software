@@ -116,7 +116,7 @@ class ModuleProduct extends Product {
 					$sortString .= "IF(Member.ID = $ID, 1, ";
 					$sortStringEnd .= ")";
 				}
-				$sortString .= " 0".$sortStringEnd." DESC";
+				$sortString .= " 0".$sortStringEnd." DESC, \"Email\"";
 			}
 		}
 		$manyManyCTF = new ManyManyComplexTableField(
@@ -125,7 +125,7 @@ class ModuleProduct extends Product {
 			$sourceClass = "Member",
 			$fieldList = null,
 			$detailFormFields = null,
-			$sourceFilter = "\"Email\" ",
+			$sourceFilter = "",
 			$sourceSort = $sortString ,
 			$sourceJoin = ""
 		);
