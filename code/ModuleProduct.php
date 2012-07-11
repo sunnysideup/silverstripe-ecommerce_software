@@ -225,6 +225,7 @@ class ModuleProduct extends Product {
 		$logInLink = Director::absoluteURL("Security/login");
 		$editYourDetailsLink = Director::absoluteURL(DataObject::get_one("RegisterAndEditDetailsPage")->Link());
 		$customisationArray = array(
+			"ID" => $this->ID,
 			"PageLink" => $pageLink,
 			"PasswordResetLink" => $passwordResetLink,
 			"LogInLink" => $logInLink,
@@ -261,28 +262,11 @@ class ModuleProduct_Controller extends Product_Controller {
 	function ReadMeContent() {
 		if($this->ReadMeURL){
 			$this->ReadMeURL = str_replace("http://raw.github", "https://raw.github", $this->ReadMeURL);
-			if($this->url_exists($this->ReadMeURL)) {
+			if($this->checkIfExternalLinkWors($this->ReadMeURL)) {
 				return file_get_contents($this->ReadMeURL);
 			}
 		}
 	}
-
-	function url_exists($url) {
-		// Version 4.x supported
-		$handle   = curl_init($url);
-		if (false === $handle){
-			return false;
-		}
-		curl_setopt($handle, CURLOPT_HEADER, false);
-		curl_setopt($handle, CURLOPT_FAILONERROR, true);  // this works
-		curl_setopt($handle, CURLOPT_HTTPHEADER, Array("User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.15) Gecko/20080623 Firefox/2.0.0.15") ); // request as if Firefox
-		curl_setopt($handle, CURLOPT_NOBODY, true);
-		curl_setopt($handle, CURLOPT_RETURNTRANSFER, false);
-		$connectable = curl_exec($handle);
-		curl_close($handle);
-		return $connectable;
-	}
-
 
 	/**
 	 *
@@ -329,6 +313,23 @@ class ModuleProduct_Controller extends Product_Controller {
 		}
 	}
 
+
+
+	protected function checkIfExternalLinkWors($url) {
+		// Version 4.x supported
+		$handle   = curl_init($url);
+		if (false === $handle){
+			return false;
+		}
+		curl_setopt($handle, CURLOPT_HEADER, false);
+		curl_setopt($handle, CURLOPT_FAILONERROR, true);  // this works
+		curl_setopt($handle, CURLOPT_HTTPHEADER, Array("User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.15) Gecko/20080623 Firefox/2.0.0.15") ); // request as if Firefox
+		curl_setopt($handle, CURLOPT_NOBODY, true);
+		curl_setopt($handle, CURLOPT_RETURNTRANSFER, false);
+		$connectable = curl_exec($handle);
+		curl_close($handle);
+		return $connectable;
+	}
 
 
 
