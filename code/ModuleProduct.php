@@ -51,7 +51,6 @@ class ModuleProduct extends Product {
 		return $this->getField("MenuTitle");
 	}
 
-
 	public static $many_many = array(
 		"Authors" => "Member"
 	);
@@ -247,9 +246,9 @@ class ModuleProduct_Controller extends Product_Controller {
 
 	function init(){
 		parent::init();
+		Requirements::javascript(THIRDPARTY_DIR."/jquery-form/jquery.form.js");
 		Requirements::javascript("ecommerce_software/javascript/Markdown.Converter.js");
 		Requirements::javascript("ecommerce_software/javascript/ModuleProduct.js");
-		Requirements::javascript(THIRDPARTY_DIR."/jquery-form/jquery.form.js");
 		Requirements::themedCSS("ModuleProduct");
 	}
 
@@ -260,7 +259,6 @@ class ModuleProduct_Controller extends Product_Controller {
 	}
 
 	function ReadMeContent() {
-		return "";
 		if($this->ReadMeURL){
 			$this->ReadMeURL = str_replace("http://raw.github", "https://raw.github", $this->ReadMeURL);
 			if($this->checkIfExternalLinkWorks($this->ReadMeURL)) {
