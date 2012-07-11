@@ -260,9 +260,10 @@ class ModuleProduct_Controller extends Product_Controller {
 	}
 
 	function ReadMeContent() {
+		return "";
 		if($this->ReadMeURL){
 			$this->ReadMeURL = str_replace("http://raw.github", "https://raw.github", $this->ReadMeURL);
-			if($this->checkIfExternalLinkWors($this->ReadMeURL)) {
+			if($this->checkIfExternalLinkWorks($this->ReadMeURL)) {
 				return file_get_contents($this->ReadMeURL);
 			}
 		}
@@ -315,7 +316,7 @@ class ModuleProduct_Controller extends Product_Controller {
 
 
 
-	protected function checkIfExternalLinkWors($url) {
+	protected function checkIfExternalLinkWorks($url) {
 		// Version 4.x supported
 		$handle   = curl_init($url);
 		if (false === $handle){
