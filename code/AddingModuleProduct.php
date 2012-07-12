@@ -47,6 +47,7 @@ class AddingModuleProduct_Form extends Form  {
 
 	function __construct($controller, $name, $moduleProductID = 0) {
 		$fields = new FieldSet();
+		$moduleProduct = null;
 		if($moduleProductID) {
 			$fields->push(new HeaderField('AddEditModule','Edit '.$controller->dataRecord->Title, 2));
 			$fields->push(new HiddenField('ModuleProductID',$moduleProductID, $moduleProductID));
