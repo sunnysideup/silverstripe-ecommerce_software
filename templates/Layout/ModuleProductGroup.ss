@@ -39,7 +39,6 @@
 		<div class="sidebarTop"></div>
 		<% include Sidebar_Cart %>
 		<% include Sidebar_ModuleProductGroup %>
-		<% include Sidebar %>
 		<% include Sidebar_UserAccount %>
 		<div class="sidebarBottom"></div>
 	</div>
