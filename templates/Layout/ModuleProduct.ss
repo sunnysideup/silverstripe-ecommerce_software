@@ -37,7 +37,6 @@
 		<div class="sidebarTop"></div>
 		<% include Sidebar_PreviousAndNextProduct %>
 		<% include Sidebar_Cart %>
-		<% include Sidebar %>
 		<% include Sidebar_UserAccount %>
 		<div class="sidebarBottom"></div>
 	</div>
