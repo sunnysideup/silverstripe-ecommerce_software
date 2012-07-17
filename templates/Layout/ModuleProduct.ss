@@ -1,8 +1,4 @@
-<div id="Sidebar">
-	<% include Sidebar_Cart %>
-	<% include Sidebar_PreviousAndNextProduct %>
-</div>
-<div id="Product">
+<div id="ModuleProduct">
 
 	<div id="ModuleProductInnerHolder"><% include ModuleProductInner %></div>
 
@@ -34,13 +30,18 @@
 			$PageComments
 		</div>
 	<% end_if %>
-
-
-
-
-
 </div>
 
+<aside>
+	<div id="Sidebar">
+		<div class="sidebarTop"></div>
+		<% include Sidebar_PreviousAndNextProduct %>
+		<% include Sidebar_Cart %>
+		<% include Sidebar %>
+		<% include Sidebar_UserAccount %>
+		<div class="sidebarBottom"></div>
+	</div>
+</aside>
 
 
 

@@ -1,9 +1,4 @@
-<div id="Sidebar">
-	<div class="sidebarTop"></div>
-	<% include Sidebar_Cart %>
-	<% include Sidebar_ModuleProductGroup %>
-	<div class="sidebarBottom"></div>
-</div>
+
 <div id="ProductGroup">
 	<h1 id="PageTitle">$Title</h1>
 	<% if Content %><div id="ContentHolder">$Content</div><% end_if %>
@@ -38,8 +33,15 @@
 	<% if Form %><div id="FormHolder">$Form</div><% end_if %>
 	<% if PageComments %><div id="PageCommentsHolder">$PageComments</div><% end_if %>
 </div>
-<div class="clear"><!-- --></div>
 
-
-
+<aside>
+	<div id="Sidebar">
+		<div class="sidebarTop"></div>
+		<% include Sidebar_Cart %>
+		<% include Sidebar_ModuleProductGroup %>
+		<% include Sidebar %>
+		<% include Sidebar_UserAccount %>
+		<div class="sidebarBottom"></div>
+	</div>
+</aside>
 

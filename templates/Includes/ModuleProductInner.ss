@@ -1,6 +1,7 @@
 
 <h1 class="pageTitle">$Title</h1>
 <% if MetaDescription %><p id="MetaDescriptionHolder">$MetaDescription</p><% end_if %>
+<% if Content %><div id="ContentHolder">$Content</div><% end_if %>
 
 <div class="productDetails">
 <% include ProductImage %>
