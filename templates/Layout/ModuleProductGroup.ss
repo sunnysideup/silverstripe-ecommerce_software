@@ -20,8 +20,7 @@
 					<span class="authorHeading listItemHeading" title="Author(s)">Author:</span> <% control Authors %><a href="#" rel="author_$ScreenName">$ScreenName</a><% if Last %>.<% else %>, <% end_if %><% end_control %>
 				</span><% end_if %>
 				<div class="explanation" id="Explanation$ID">
-					<p>$MetaDescription</p>
-					<p class="more"><a href="$Link">more details ...</a></p>
+					<p class="shortIntro">$MetaDescription</p>
 				</div>
 			</li>
 			<% end_control %>

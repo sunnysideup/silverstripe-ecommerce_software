@@ -108,7 +108,6 @@ class ModuleProduct extends Product {
 		$sortString = "";
 		if($authors) {
 			$authorsArray = $authors->map("ID", "ScreenName");
-			$sortString = "";
 			$sortStringEnd = "";
 			if(is_array($authorsArray) && count($authorsArray)) {
 				foreach($authorsArray as $ID => $ScreenName) {

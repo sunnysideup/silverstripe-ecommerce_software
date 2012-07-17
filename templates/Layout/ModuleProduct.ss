@@ -17,11 +17,17 @@
 	</div>
 	<% end_if %>
 
+
 	<% if Form %>
 	<div id="FormHolder">$Form</div>
 	<% else %>
 	<h3  class="moduleH3">Edit this page</h3>
 	<p>Please <a href="Security/login/?BackURL=$Link.URLATT">log in</a> to edit this module.</p>
+	<% end_if %>
+
+	<% if canEmail %>
+	<h2>Edit This Page in CMS</h2>
+	<p>If you are an admin then please <a href="/admin/show/$ID">edit this page</a> in the CMS.</p>
 	<% end_if %>
 
 	<% if PageComments %>
@@ -30,6 +36,8 @@
 			$PageComments
 		</div>
 	<% end_if %>
+
+
 </div>
 
 <aside>

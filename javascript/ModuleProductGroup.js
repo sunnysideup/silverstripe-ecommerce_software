@@ -28,7 +28,7 @@ ModuleProductGroup = {
 	 * initialises all the ajax functionality
 	 */
 	init: function () {
-		this.setupExplanations();
+		//this.setupExplanations();
 
 		if(!this.urlFiltered) {
 			this.setupKeywordSearch();
@@ -79,7 +79,7 @@ ModuleProductGroup = {
 					phrase = jQuery(this).val();
 					if(phrase.length > 2) {
 						url = jQuery(this).parents("form").attr('action');
-						jQuery("#Search").addClass("loading");
+						jQuery("#Search input").addClass("loading");
 						jQuery(".tags a, #SidebarModuleProductGroupTags a").removeClass("current");
 						jQuery.getJSON(
 							url,
@@ -88,7 +88,7 @@ ModuleProductGroup = {
 								action_modulesearchformresults: "Filter"
 							},
 							function(data){
-								jQuery("#Search").removeClass("loading");
+								jQuery("#Search input").removeClass("loading");
 								if(data.ModuleProducts && data.ModuleProducts.length > 0) {
 									jQuery(".productList > li").hide();
 									for(i = 0; i < data.ModuleProducts.length; i++) {
