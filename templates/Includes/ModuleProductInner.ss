@@ -36,11 +36,13 @@
 			<% if AreYouAvailableForPaidSupport %>
 				<p>
 					<strong><% if Company %><% else %>$FirstName<% end_if %></strong> is available for paid support for this module.
-					<ul>
-						<% if Rate15Mins %><li>The indicative rate for a fifteen minute call is  $Rate15Mins.Nice ($Currency).</li><% end_if %>
-						<% if Rate120Mins %><li>The indicative rate for a two hour support block is $Rate120Mins.Nice ($Currency).</li><% end_if %>
-						<% if Rate480Mins %><li>The indicative rate for a full day (eight hours) support block is $Rate480Mins.Nice ($Currency).</li><% end_if %>
-					</ul>
+					<blockquote>
+						<ul>
+							<% if Rate15Mins %><li>The indicative rate for a fifteen minute call is  $Rate15Mins.Nice ($Currency).</li><% end_if %>
+							<% if Rate120Mins %><li>The indicative rate for a two hour support block is $Rate120Mins.Nice ($Currency).</li><% end_if %>
+							<% if Rate480Mins %><li>The indicative rate for a full day (eight hours) support block is $Rate480Mins.Nice ($Currency).</li><% end_if %>
+						</ul>
+					</blockquote>
 				</p>
 			<% else %>
 				<p>Sorry, <strong><% if Company %><% else %>$FirstName<% end_if %></strong> is not available for paid support for this module.</p>

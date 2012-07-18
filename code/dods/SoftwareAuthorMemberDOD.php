@@ -63,6 +63,7 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 
 	function updateMemberFormFields(&$fields) {
 		$currency = $this->Currency();
+		$fields->RemoveByName("PreferredCurrencyID");
 		$field = $fields->fieldByName("ScreenName"); $field->setTitle("Screen Name / Alias");
 		$field = $fields->fieldByName("GithubURL"); $field->setTitle("Github URL - e.g. https://github.com/mynamehere");
 		$field = $fields->fieldByName("SilverstripeDotOrgURL"); $field->setTitle("www.silverstripe.org URL - e.g. http://www.silverstripe.org/ForumMemberProfile/show/1");
@@ -76,14 +77,16 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 		$field = $fields->fieldByName("Rate120Mins"); $field->setTitle("If applicable, approximate charge (in $currency) for a two hour support block?");
 		$field = $fields->fieldByName("Rate480Mins"); $field->setTitle("If applicable, approximate charge (in $currency) for a development day (eight hours)?");
 		if($modules = $this->owner->ModuleProducts()) {
-			$html = "<h3 id=\"ModuleListHeading\" class=\"clear\"><a href=\"".$this->ListOfModulesLink()."\">Currently Listed Modules ...</a></h3><ul>";
-			foreach($modules as $module) {
-				if($module->ShowInSearch) {
-					$html .= "<li><a href=\"".$module->Link()."\">".$module->Title."</a></li>";
+			if($modules->count()) {
+				$html = "<h3 id=\"ModuleListHeading\" class=\"clear\"><a href=\"".$this->ListOfModulesLink()."\">Currently Listed Modules ...</a></h3><ul>";
+				foreach($modules as $module) {
+					if($module->ShowInSearch) {
+						$html .= "<li><a href=\"".$module->Link()."\">".$module->Title."</a></li>";
+					}
 				}
+				$html .= "</ul>";
+				$fields->push(new LiteralField("ModuleList", $html));
 			}
-			$html .= "</ul>";
-			$fields->push(new LiteralField("ModuleList", $html));
 		}
 		Requirements::javascript("ecommerce_software/javascript/SoftwareAuthorMemberDOD.js");
 	}

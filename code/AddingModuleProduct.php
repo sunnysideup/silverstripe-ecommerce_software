@@ -13,13 +13,6 @@ class AddingModuleProduct extends Page {
 
 	public static $icon = "ecommerce_software/images/treeicons/AddingModuleProduct";
 
-	public function canView($member = null) {
-		if(!$member) {
-			$member = Member::currentMember();
-		}
-		return $member ? true : false;
-	}
-
 
 }
 
@@ -29,15 +22,19 @@ class AddingModuleProduct_Controller extends Page_Controller {
 	function init(){
 		parent::init();
 		if(!Member::currentMember()) {
-			RegisterAndEditDetailsPage::link_for_going_to_page_via_making_user($this->Link());
+			$link = RegisterAndEditDetailsPage::link_for_going_to_page_via_making_user($this->Link());
+			Director::redirect($link);
 		}
 		if(isset($_REQUEST["ModuleProductID"])) {
+			DIE("BBBBBBBBBBBB");
 			$this->moduleProductID = intval($_REQUEST["ModuleProductID"]);
 		}
 	}
 
 	function Form () {
-		return new AddingModuleProduct_Form($this, "Form",$this->moduleProductID);
+		if(Member::currentMember()) {
+			return new AddingModuleProduct_Form($this, "Form",$this->moduleProductID);
+		}
 	}
 
 
@@ -46,6 +43,7 @@ class AddingModuleProduct_Controller extends Page_Controller {
 class AddingModuleProduct_Form extends Form  {
 
 	function __construct($controller, $name, $moduleProductID = 0) {
+
 		$fields = new FieldSet();
 		$moduleProduct = null;
 		if($moduleProductID) {
@@ -67,8 +65,6 @@ class AddingModuleProduct_Form extends Form  {
 		}
 		//$fields->push(new DropdownField('ParentID','Type', $types, $controller->dataRecord->ID));
 		$fields->push(new TextField('Title','Title'));
-		$fields->push(new CheckboxField('ShowInMenus','Show in menus (unticking both boxes here will delete the module)'));
-		$fields->push(new CheckboxField('ShowInSearch','Show in search (unticking both boxes here will delete the module)'));
 		$fields->push(new TextareaField('MetaDescription','Three sentence Introduction', 3));
 		$fields->push(new HTMLEditorField('Content','Long Description', 3));
 		$fields->push(new TextField('AdditionalTags','Additional Keyword(s), comma separated'));
@@ -77,13 +73,26 @@ class AddingModuleProduct_Form extends Form  {
 		$fields->push(new TextField('ReadMeURL','Read me file - e.g. http://www.mymodule.com/readme.md'));
 		$fields->push(new TextField('DemoURL','Demo - e.g. http://demo.mymodule.com/'));
 		$fields->push(new TextField('SvnURL','SVN repository - allowing you to checkout trunk or latest version - e.g. http://svn.mymodule.com/svn/trunk/'));
-		$fields->push(new TextField('GitURL','GIT repository - e.g. https://github.com/my-git-username/silverstripe-my-module'));
+		$fields->push(new TextField('GitURL','GIT repository - e.g. https://github.com/my-github-username/silverstripe-my-module'));
 		$fields->push(new TextField('OtherURL','Link to other repository or download URL - e.g. http://www.mymodule.com/downloads/'));
 		$fields->push(new CheckboxSetField('EcommerceProductTags','Tags', DataObject::get("EcommerceProductTag")));
 		$member = Member::currentMember();
 		if($member->IsAdmin()) {
 			$fields->push(new CheckboxSetField('Authors','Author(s)', DataObject::get("Member", "Email <> '' AND Email IS NOT NULL")->toDropDownMap('ID','Email')));
 			$fields->push(new DropdownField('ParentID','Move to', DataObject::get("ProductGroup")->toDropDownMap('ID','MenuTitle')));
+			$fields->push(new CheckboxField('ShowInMenus','Show in menus (unticking both boxes here will delete the module)'));
+			$fields->push(new CheckboxField('ShowInSearch','Show in search (unticking both boxes here will delete the module)'));
+
+		}
+		else {
+			$fields->push(new HiddenField('ShowInMenus', '', 0));
+			$fields->push(new HiddenField('ShowInSearch', '', 0));
+			$fields->push(new HiddenField('ParentID', '', $controller->dataRecord->ID));
+			if($moduleProduct) {
+				$moduleProduct->ParentID = $controller->dataRecord->ID;
+				$moduleProduct->ShowInSearch = 0;
+				$moduleProduct->ShowInMenus = 0;
+			}
 		}
 		if($moduleProduct && $moduleProduct->canEdit()) {
 			if($authors = $moduleProduct->Authors()) {
@@ -103,6 +112,7 @@ class AddingModuleProduct_Form extends Form  {
 	}
 
 	function submit($data, $form) {
+
 		$member = Member::currentMember();
 		if(!$member) {
 			$form->setMessage("You need to be logged in to edit this module.", "bad");
@@ -123,6 +133,14 @@ class AddingModuleProduct_Form extends Form  {
 		$form->saveInto($page);
 		$page->MetaTitle = $data["Title"];
 		$page->MenuTitle = $data["Title"];
+		if(!$member->IsAdmin()) {
+			$page->ShowInMenus = 0;
+			$page->ShowInMenus = 0;
+			$parentPage = DataObject::get_one("AddingModuleProduct");
+			if($parentPage) {
+				$page->ParentID = $parentPage->ID;
+			}
+		}
 		$page->writeToStage('Stage');
 		$page->Publish('Stage', 'Live');
 		$page->Status = "Published";
@@ -156,7 +174,7 @@ class AddingModuleProduct_Form extends Form  {
 			return $page->renderWith("ModuleProductInner");
 		}
 		else {
-			Director::redirectBack();
+			Director::redirect($page->Link());
 		}
 	}
 
