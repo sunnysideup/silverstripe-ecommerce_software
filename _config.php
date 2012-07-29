@@ -13,7 +13,14 @@
 //ImportModulesTask::set_data_source("/data/importme.csv");
 
 //MAY SET
-//ProductsAndGroupsModelAdmin::add_managed_model("ModuleProduct");
+/**
+ * ADD TO ECOMMERCE.YAML:
+ProductsAndGroupsModelAdmin:
+	managed_modules: [
+		...
+		ModuleProduct
+	]
+*/
 //ModuleProductGroup::remove_sort_option("default");
 //ModuleProductGroup::add_sort_option( $key = "created", $title = "Most recently added", $sql = "\"Created\" DESC");
 //ModuleProductGroup::add_sort_option( $key = "code", $title = "Code", $sql = "\"Code\" ASC");
