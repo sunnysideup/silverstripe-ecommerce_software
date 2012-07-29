@@ -10,6 +10,19 @@
 
 class ModuleProductGroup extends ProductGroupWithTags {
 
+	/**
+	 * Standard SS variable.
+	 */
+	public static $singular_name = "Module";
+		function i18n_singular_name() { return _t("ProductGroup.MODULEPRODUCTGROUP", "Module");}
+
+	/**
+	 * Standard SS variable.
+	 */
+	public static $plural_name = "Modules";
+		function i18n_plural_name() { return _t("ProductGroup.MODULEPRODUCTGROUPS", "Modules");}
+
+
 	public static $default_child = 'ModuleProduct';
 
 	public static $icon = "ecommerce_software/images/treeicons/ModuleProductGroup";
