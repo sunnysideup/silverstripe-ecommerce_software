@@ -80,8 +80,8 @@ class AddingModuleProduct_Form extends Form  {
 		if($member->IsAdmin()) {
 			$fields->push(new CheckboxSetField('Authors','Author(s)', DataObject::get("Member", "Email <> '' AND Email IS NOT NULL")->toDropDownMap('ID','Email')));
 			$fields->push(new DropdownField('ParentID','Move to', DataObject::get("ProductGroup")->toDropDownMap('ID','MenuTitle')));
-			$fields->push(new CheckboxField('ShowInMenus','Show in menus (unticking both boxes here will delete the module)'));
-			$fields->push(new CheckboxField('ShowInSearch','Show in search (unticking both boxes here will delete the module)'));
+			$fields->push(new CheckboxField('ShowInMenus','Show in menus (unticking both boxes here will hide the module)'));
+			$fields->push(new CheckboxField('ShowInSearch','Show in search (unticking both boxes here will hide the module)'));
 
 		}
 		else {

@@ -22,7 +22,7 @@ class ModuleProduct extends Product {
 				"SvnURL",
 				"GitURL",
 				"OtherURL",
-				"EcommerceProductTags",
+				//"EcommerceProductTags",
 				"Authors"
 			)
 	 );
