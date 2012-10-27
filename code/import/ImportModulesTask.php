@@ -316,7 +316,7 @@ class ImportModulesTask_AdminDecorator extends Extension{
 		"deleteobsoletemoduleowners" => true
 	);
 
-	function updateEcommerceDevMenuMigrations(&$buildTasks){
+	function updateEcommerceDevMenuMigrations($buildTasks){
 		$buildTasks[] = "importmodulestask";
 		//$buildTasks[] = "deleteobsoletemoduleowners";
 		return $buildTasks;
@@ -336,9 +336,7 @@ class ImportModulesTask_AdminDecorator extends Extension{
 
 
 	public function deleteobsoletemoduleowners(){
-		$buildTask = new ImportModulesTask($request);
-		$buildTask->deleteobsoletemoduleowners($request);
-		$this->owner->displayCompletionMessage($buildTask);
+		$this->runTask("ImportModulesTask", $request);
 	}
 
 
