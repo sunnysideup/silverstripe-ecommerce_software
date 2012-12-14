@@ -20,13 +20,13 @@ class ImportModulesTask extends BuildTask{
 		return "Opens the local csv file and imports all the modules";
 	}
 
-
 	function run($request) {
 		$this->createAuthorGroup();
 		$this->importmodules();
 		$this->sortPagesAlphabetically();
 		return "BBBBBBBBBBBBBBB";
 	}
+
 	function cleantags(){
 		DB::query("DELETE FROM \"EcommerceProductTag\" WHERE TRIM(Title) = '' OR TRIM(Code) = '' OR Title IS NULL or Code IS NULL;");
 	}
