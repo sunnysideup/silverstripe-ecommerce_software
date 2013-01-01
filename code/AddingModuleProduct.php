@@ -26,7 +26,6 @@ class AddingModuleProduct_Controller extends Page_Controller {
 			Director::redirect($link);
 		}
 		if(isset($_REQUEST["ModuleProductID"])) {
-			DIE("BBBBBBBBBBBB");
 			$this->moduleProductID = intval($_REQUEST["ModuleProductID"]);
 		}
 	}
