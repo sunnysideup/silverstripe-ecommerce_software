@@ -4,11 +4,11 @@
 
 class ImportModulesTask extends BuildTask{
 
-	static $parent_url_segment = "new-modules";
+	private static $parent_url_segment = "new-modules";
 		function get_parent_url_segment() {return self::$parent_url_segment;}
 		function set_parent_url_segment($s) {self::$parent_url_segment = $s;}
 
-	static $data_source = "/mysite/data/modules.csv";
+	private static $data_source = "/mysite/data/modules.csv";
 		function get_data_source() {return self::$data_source;}
 		function set_data_source($s) {self::$data_source = $s;}
 
@@ -72,7 +72,10 @@ class ImportModulesTask extends BuildTask{
 
 	private function createAuthorGroup(){
 
-		if(!$group = DataObject::get_one("Group", "Code = '".SoftwareAuthorMemberDOD::get_register_group_code()."'")) {
+		if(!$group = Group::get()
+			->filter(array("Code" => .SoftwareAuthorMemberDOD::get_register_group_code())
+			->first()
+		) {
 			$group = new Group();
 			$group->Code = SoftwareAuthorMemberDOD::get_register_group_code();
 			$group->Title = SoftwareAuthorMemberDOD::get_register_group_title();
@@ -87,8 +90,10 @@ class ImportModulesTask extends BuildTask{
 
 	private function makeModules($rows)  {
 		increase_time_limit_to(600);
-		$parent = DataObject::get_one("ModuleProductGroup", "\"URLSegment\" = '".self::$parent_url_segment."'");
 		DB::query("DELETE FROM \"EcommerceProductTag\" WHERE TRIM(Title) = '';");
+		$parent = ModuleProductGroup::get()
+			->filter(array("URLSegment" => self::$parent_url_segment))
+			->first();
 		if($parent) {
 			$parentID = $parent->ID;
 			unset($parent);
@@ -96,7 +101,9 @@ class ImportModulesTask extends BuildTask{
 		else {
 			$parentID = 0;
 		}
-		$group = DataObject::get_one("Group", "Code = '".SoftwareAuthorMemberDOD::get_register_group_code()."'");
+		$group = Group::get()
+			->filter(array("Code" => SoftwareAuthorMemberDOD::get_register_group_code()))
+			->first();
 		if(!$group) {
 			user_error("Group for authors could not be found!");
 		}
@@ -122,7 +129,9 @@ class ImportModulesTask extends BuildTask{
 						$OtherURL = Convert::raw2sql($row["OtherURL"]);
 						$Tags =  Convert::raw2sql($row["Tags"]);
 						$Description =  Convert::raw2sql($row["Description"]);
-						$page = DataObject::get_one("ModuleProduct", "\"ImportID\" = '".$ImportID."'");
+						$page = ModuleProduct::get()
+							->filter(array("ImportID" => $ImportID))
+							->first();
 						if(!$page) {
 							$new = true;
 							$page = new ModuleProduct();
@@ -141,15 +150,23 @@ class ImportModulesTask extends BuildTask{
 								$member = null;
 								//member
 								if($ScreenName) {
-									$member = DataObject::get_one("Member", "\"ScreenName\" = '$ScreenName'");
+									$member = Member::get()
+										->filter(array("ScreenName" => $ScreenName))
+										->first();
 								}
 								$identifierField = Member::get_unique_identifier_field();
 								if(!$member) {
-									$member = DataObject::get_one('Member', " \"$identifierField\" = '$Email'");
+									$member = Member::get()
+										->filter(array($identifierField, $Email));
 								}
 								if($member) {
 									$i = 0;
-									while($replaceMember = DataObject::get_one('Member', " \"$identifierField\" = '$Email' AND \"Member\".\"ID\" <> ".$member->ID)) {
+									while($replaceMember = Member::get()
+									->filter(array($identifierField => $Email))
+									->exclude("ID", $member->ID)
+									->first()
+									&& $i < 100000
+								) {
 										if($replaceMember) {
 											$i++;
 											$member = $replaceMember;
@@ -182,7 +199,6 @@ class ImportModulesTask extends BuildTask{
 								$page->ShowInSearch = 1;
 								$page->ShowInMenus = 1;
 								$page->Title = $Title;
-								$page->MetaTitle = $Title;
 								$page->MenuTitle = $Title;
 								$page->MetaDescription = strip_tags($Description);
 								$page->Code = $Code;
@@ -205,9 +221,13 @@ class ImportModulesTask extends BuildTask{
 									foreach($tagsArray as $tag) {
 										$tag = Convert::raw2sql(trim($tag));
 										if($tag) {
-											$tagObject = DataObject::get_one("EcommerceProductTag", "\"Title\" = '$tag'");
+											$tagObject = EcommerceProductTag::get()
+												->filter(array("Title" => $tag))
+												->First();
 											if(!$tagObject) {
-												$tagObject = DataObject::get_one("EcommerceProductTag", "\"Synonyms\" LIKE '%$tag%'");
+												$tagObject = EcommerceProductTag::get()
+													->filter(array("Synonyms:PartialMatch" => $tag))
+													->first();
 											}
 											if(!$tagObject) {
 												$tagObject = new EcommerceProductTag();
@@ -260,9 +280,13 @@ class ImportModulesTask extends BuildTask{
 	}
 
 	private function sortPagesAlphabetically(){
-		$parent = DataObject::get_one("ModuleProductGroup", "\"URLSegment\" = '".self::$parent_url_segment."'");
+		$parent = ModuleProductGroup::get()
+			->filter(array("URLSegment" => self::$parent_url_segment))
+			->first();
 		if($parent) {
-			$pages = DataObject::get("ModuleProduct", "\"ParentID\" = ".$parent->ID, "\"Title\" ASC");
+			$pages = ModuleProduct::get()
+				->filter(array("ParentID" => $parent->ID))
+				->sort("Title", "ASC");
 			$i = 0;
 			foreach($pages as $page) {
 				$i++;
@@ -273,7 +297,9 @@ class ImportModulesTask extends BuildTask{
 	}
 
 	public function deleteobsoletemoduleowners($request = null){
-		$group = DataObject::get_one("Group", "\"Code\" = '".SoftwareAuthorMemberDOD::get_register_group_code()."'");
+		$group = Group::get()
+			->filter(array("Code" => SoftwareAuthorMemberDOD::get_register_group_code()))
+			->first();
 		if($group) {
 			$members = $group->Members();
 			if($members) {
@@ -283,7 +309,7 @@ class ImportModulesTask extends BuildTask{
 					}
 					else {
 						DB::alteration_message("The following member does not seem to have any module products ...".$member->Email.": ".$member->Title, "deleted");
-						if(!$member->IsAdmin()) {
+						if(!$member->inGroup("ADMIN")) {
 							$member->delete();
 						}
 						else {
@@ -311,7 +337,7 @@ class ImportModulesTask extends BuildTask{
 
 class ImportModulesTask_AdminDecorator extends Extension{
 
-	static $allowed_actions = array(
+	private static $allowed_actions = array(
 		"importmodulestask" => true,
 		"deleteobsoletemoduleowners" => true
 	);

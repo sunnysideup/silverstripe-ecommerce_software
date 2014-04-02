@@ -2,9 +2,9 @@
 	<% if Tags %>
 	<h3>In the <i>$MenuTitle</i> section</h3>
 	<ul>
-		<% control Tags %><li class="$FirstLast $LinkingMode">
+		<% with/loop Tags %><li class="$FirstLast $LinkingMode">
 		<% include EcommerceProductTagItem %>
-		</li><% end_control %>
+		</li><% end_with/loop %>
 	</ul>
 	<% end_if %>
 </div>

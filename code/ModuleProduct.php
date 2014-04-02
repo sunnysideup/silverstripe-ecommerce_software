@@ -10,9 +10,9 @@
 
 class ModuleProduct extends Product {
 
-	public static $icon = "ecommerce_software/images/treeicons/ModuleProduct";
+	private static $icon = "ecommerce_software/images/treeicons/ModuleProduct";
 
-	public static $api_access = array(
+	private static $api_access = array(
 		'view' => array(
 				"ModuleTitle",
 				"Code",
@@ -27,7 +27,7 @@ class ModuleProduct extends Product {
 			)
 	 );
 
-	public static $db = array(
+	private static $db = array(
 		"Code" => "Varchar",
 		"MainURL" => "Varchar(255)",
 		"ReadMeURL" => "Varchar(255)",
@@ -38,11 +38,11 @@ class ModuleProduct extends Product {
 		"ImportID" => "Int"
 	);
 
-	public static $has_many = array(
+	private static $has_many = array(
 		"ModuleProductEmails" => "ModuleProductEmail"
 	);
 
-	public static $casting = array(
+	private static $casting = array(
 		"ModuleTitle" => "Varchar"
 	);
 
@@ -51,18 +51,18 @@ class ModuleProduct extends Product {
 		return $this->getField("MenuTitle");
 	}
 
-	public static $many_many = array(
+	private static $many_many = array(
 		"Authors" => "Member"
 	);
 
-	public static $singular_name = "Module";
+	private static $singular_name = "Module";
 		function i18n_singular_name() { return _t("Order.MODULE", "Module");}
 
-	public static $plural_name = "Modules";
+	private static $plural_name = "Modules";
 		function i18n_plural_name() { return _t("Order.Modules", "Modules");}
 
 	function canEdit($member = null){
-		if($member = Member::currentMember()) {
+		if($member = Member::currentUser()) {
 			if($member->IsShopAdmin()) {
 				return true;
 			}
@@ -78,7 +78,7 @@ class ModuleProduct extends Product {
 	}
 
 	function canDelete($member = null){
-		if($member = Member::currentMember()) {
+		if($member = Member::currentUser()) {
 			if($member->IsShopAdmin()) {
 				return true;
 			}
@@ -90,7 +90,7 @@ class ModuleProduct extends Product {
 		return $this->canDelete($member);
 	}
 
-	public static $searchable_fields = array(
+	private static $searchable_fields = array(
 		'Title' => "PartialMatchFilter",
 		'InternalItemID' => "PartialMatchFilter",
 		'ImportID',
@@ -102,12 +102,12 @@ class ModuleProduct extends Product {
 
 
 	function getCMSFields(){
-		$fields = new FieldSet();
+		$fields = new FieldList();
 		$fields = parent::getCMSFields();
 		$authors = $this->Authors();
 		$sortString = "";
 		if($authors) {
-			$authorsArray = $authors->map("ID", "ScreenName");
+			$authorsArray = $authors->map("ID", "ScreenName")->toArray();
 			$sortStringEnd = "";
 			if(is_array($authorsArray) && count($authorsArray)) {
 				foreach($authorsArray as $ID => $ScreenName) {
@@ -117,33 +117,16 @@ class ModuleProduct extends Product {
 				$sortString .= " 0".$sortStringEnd." DESC, \"Email\"";
 			}
 		}
-		$manyManyCTF = new ManyManyComplexTableField(
-			$controller = $this,
-			$name = "Authors",
-			$sourceClass = "Member",
-			$fieldList = null,
-			$detailFormFields = null,
-			$sourceFilter = "",
-			$sourceSort = $sortString ,
-			$sourceJoin = ""
-		);
-		$manyManyCTF->setPageSize(50);
-		$fields->addFieldToTab('Root.Content.Software', new TextField('Code','Code (this should be the same as the recommended folder name)'));
-		$fields->addFieldToTab('Root.Content.Software', new TextareaField('MetaDescription','Three sentence introduction', 3));
-		$fields->addFieldToTab('Root.Content.Software', new TextField('MainURL','Link to home page for the module - e.g. http://www.mymodule.com/'));
-		$fields->addFieldToTab('Root.Content.Software', new TextField('ReadMeURL','Link to read me file - e.g. http://www.mymodule.com/readme.md'));
-		$fields->addFieldToTab('Root.Content.Software', new TextField('DemoURL','Link to a demo - e.g. http://demo.mymodule.com/'));
-		$fields->addFieldToTab('Root.Content.Software', new TextField('SvnURL','Link to the SVN URL - allowing you to checkout trunk or latest version directly - e.g. http://svn.mymodule.com/svn/trunk/'));
-		$fields->addFieldToTab('Root.Content.Software', new TextField('GitURL','Link to the GIT URL - e.g. https://github.com/my-git-username/silverstripe-my-module'));
-		$fields->addFieldToTab('Root.Content.Software', new TextField('OtherURL','Link to other repository or download URL - e.g. http://www.mymodule.com/downloads/'));
-		$fields->addFieldToTab('Root.Content.Software', new ReadonlyField('ImportID','Import Identifier'));
-		$fields->addFieldToTab('Root.Content.Software', new HeaderField("AuthorsHeading", "Authors"));
-		if($this->ID) {
-			$fields->addFieldToTab('Root.Content.Software', $manyManyCTF);
-		}
-		else {
-			$fields->addFieldToTab('Root.Content.Software', new LiteralField("AuthorsEXPLANANTION", "<p>Once saved, you can select the authors here.</p>"));
-		}
+		$fields->addFieldToTab('Root.Software', new TextField('Code','Code (this should be the same as the recommended folder name)'));
+		$fields->addFieldToTab('Root.Software', new TextareaField('MetaDescription','Three sentence introduction'));
+		$fields->addFieldToTab('Root.Software', new TextField('MainURL','Link to home page for the module - e.g. http://www.mymodule.com/'));
+		$fields->addFieldToTab('Root.Software', new TextField('ReadMeURL','Link to read me file - e.g. http://www.mymodule.com/readme.md'));
+		$fields->addFieldToTab('Root.Software', new TextField('DemoURL','Link to a demo - e.g. http://demo.mymodule.com/'));
+		$fields->addFieldToTab('Root.Software', new TextField('SvnURL','Link to the SVN URL - allowing you to checkout trunk or latest version directly - e.g. http://svn.mymodule.com/svn/trunk/'));
+		$fields->addFieldToTab('Root.Software', new TextField('GitURL','Link to the GIT URL - e.g. https://github.com/my-git-username/silverstripe-my-module'));
+		$fields->addFieldToTab('Root.Software', new TextField('OtherURL','Link to other repository or download URL - e.g. http://www.mymodule.com/downloads/'));
+		$fields->addFieldToTab('Root.Software', new ReadonlyField('ImportID','Import Identifier'));
+		$fields->addFieldToTab('Root.Software', new HeaderField("AuthorsHeading", "Authors"));
 		return $fields;
 	}
 
@@ -168,7 +151,9 @@ class ModuleProduct extends Product {
 	 *
 	 */
 	public function HasMemberContact(){
-		return DataObject::get_one("ModuleProductEmail", "\"MemberID\" = ".$this->DefaultMemberID());
+		return ModuleProductEmail::get()
+			->filter(array("MemberID" => $this->DefaultMemberID()))
+			->count() ? true : false;
 	}
 
 	/**
@@ -187,7 +172,9 @@ class ModuleProduct extends Product {
 	 *
 	 */
 	public function EmailObject(){
-		return DataObject::get_one("ModuleProductEmail", "\"ModuleProductID\" = ".$this->ID);
+		return ModuleProductEmail::get()
+			->filter(array("ModuleProductID" => $this->ID))
+			->first();
 	}
 
 	public function EmailDefaults(){
@@ -221,7 +208,7 @@ class ModuleProduct extends Product {
 		$pageLink = Director::absoluteURL($this->Link());
 		$passwordResetLink = Director::absoluteURL("Security/lostpassword");
 		$logInLink = Director::absoluteURL("Security/login");
-		$editYourDetailsLink = Director::absoluteURL(DataObject::get_one("RegisterAndEditDetailsPage")->Link());
+		$editYourDetailsLink = Director::absoluteURL(RegisterAndEditDetailsPage::get()->first()->Link());
 		$customisationArray = array(
 			"ID" => $this->ID,
 			"PageLink" => $pageLink,
@@ -287,12 +274,11 @@ class ModuleProduct_Controller extends Product_Controller {
 	 * @return Object Product
 	 */
 	function PreviousProduct(){
-		$products = DataObject::get("ModuleProduct", "\"Sort\" < ".$this->Sort." AND ParentID = ".$this->ParentID, "\"Sort\" DESC", "", 1);
-		if($products) {
-			foreach($products as $product) {
-				return $product;
-			}
-		}
+		return ModuleProduct::get()
+			->where("\"Sort\" < ".$this->Sort." AND ParentID = ".$this->ParentID)
+			->sort("Sort", "DESC")
+			->limit(1)
+			->first();
 	}
 
 	/**
@@ -300,12 +286,11 @@ class ModuleProduct_Controller extends Product_Controller {
 	 * @return Object Product
 	 */
 	function NextProduct(){
-		$products = DataObject::get("ModuleProduct", "\"Sort\" > ".$this->Sort." AND ParentID = ".$this->ParentID, "\"Sort\" ASC", "", 1);
-		if($products) {
-			foreach($products as $product) {
-				return $product;
-			}
-		}
+		return ModuleProduct::get()
+			->where("\"Sort\" > ".$this->Sort." AND ParentID = ".$this->ParentID)
+			->sort("Sort", "ASC")
+			->limit(1)
+			->first();
 	}
 
 

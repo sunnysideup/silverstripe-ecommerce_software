@@ -11,7 +11,7 @@
 class AddingModuleProduct extends Page {
 
 
-	public static $icon = "ecommerce_software/images/treeicons/AddingModuleProduct";
+	private static $icon = "ecommerce_software/images/treeicons/AddingModuleProduct";
 
 
 }
@@ -21,9 +21,9 @@ class AddingModuleProduct_Controller extends Page_Controller {
 
 	function init(){
 		parent::init();
-		if(!Member::currentMember()) {
+		if(!Member::currentUser()) {
 			$link = RegisterAndEditDetailsPage::link_for_going_to_page_via_making_user($this->Link());
-			Director::redirect($link);
+			$this->redirect($link);
 		}
 		if(isset($_REQUEST["ModuleProductID"])) {
 			$this->moduleProductID = intval($_REQUEST["ModuleProductID"]);
@@ -31,7 +31,7 @@ class AddingModuleProduct_Controller extends Page_Controller {
 	}
 
 	function Form () {
-		if(Member::currentMember()) {
+		if(Member::currentUser()) {
 			return new AddingModuleProduct_Form($this, "Form",$this->moduleProductID);
 		}
 	}
@@ -43,29 +43,31 @@ class AddingModuleProduct_Form extends Form  {
 
 	function __construct($controller, $name, $moduleProductID = 0) {
 
-		$fields = new FieldSet();
+		$fields = new FieldList();
 		$moduleProduct = null;
 		if($moduleProductID) {
 			$fields->push(new HeaderField('AddEditModule','Edit '.$controller->dataRecord->Title, 2));
 			$fields->push(new HiddenField('ModuleProductID',$moduleProductID, $moduleProductID));
-			$moduleProduct = DataObject::get_by_id("ModuleProduct", $moduleProductID);
+			$moduleProduct = ModuleProduct::get()->byID($moduleProductID);
 		}
 		else {
 			$fields->push(new HeaderField('AddEditModule',$controller->dataRecord->Title, 2));
 			$fields->push(new HiddenField('ModuleProductID',0, 0));
 		}
 		$fields->push(new TextField('Code','Code (folder name)'));
-		$moduleProductGroup = DataObject::get("ModuleProductGroup", "ParentID > 0");
-		if($moduleProductGroup) {
-			$types = $moduleProductGroup->toDropDownMap($index = 'ID', $titleField = 'MenuTitle', $emptyString = "-- please select --", $sort = false) ;
+		$moduleProductGroups = ModuleProductGroup::get()
+			->filter(array("ParentID:GreaterThan" => 0));
+		if($moduleProductGroups->count()) {
+			$types = array("" => " --- please select ---";
+			$types += $moduleProductGroups->map($index = 'ID', $titleField = 'MenuTitle'))->toArray(); ;
 		}
 		else {
 			$types = array();
 		}
 		//$fields->push(new DropdownField('ParentID','Type', $types, $controller->dataRecord->ID));
 		$fields->push(new TextField('Title','Title'));
-		$fields->push(new TextareaField('MetaDescription','Three sentence Introduction', 3));
-		$fields->push(new HTMLEditorField('Content','Long Description', 3));
+		$fields->push(new TextareaField('MetaDescription','Three sentence Introduction'));
+		$fields->push(new HtmlEditorField('Content','Long Description'));
 		$fields->push(new TextField('AdditionalTags','Additional Keyword(s), comma separated'));
 		$fields->push(new HeaderField('LinkHeader','Links', 4));
 		$fields->push(new TextField('MainURL','Home page'));
@@ -74,11 +76,11 @@ class AddingModuleProduct_Form extends Form  {
 		$fields->push(new TextField('SvnURL','SVN repository - allowing you to checkout trunk or latest version - e.g. http://svn.mymodule.com/svn/trunk/'));
 		$fields->push(new TextField('GitURL','GIT repository - e.g. https://github.com/my-github-username/silverstripe-my-module'));
 		$fields->push(new TextField('OtherURL','Link to other repository or download URL - e.g. http://www.mymodule.com/downloads/'));
-		$fields->push(new CheckboxSetField('EcommerceProductTags','Tags', DataObject::get("EcommerceProductTag")));
-		$member = Member::currentMember();
-		if($member->IsAdmin()) {
-			$fields->push(new CheckboxSetField('Authors','Author(s)', DataObject::get("Member", "Email <> '' AND Email IS NOT NULL")->toDropDownMap('ID','Email')));
-			$fields->push(new DropdownField('ParentID','Move to', DataObject::get("ProductGroup")->toDropDownMap('ID','MenuTitle')));
+		$fields->push(new CheckboxSetField('EcommerceProductTags','Tags', EcommerceProductTag::get()->map()->toArray()));
+		$member = Member::currentUser();
+		if($member->inGroup("ADMIN")) {
+			$fields->push(new CheckboxSetField('Authors','Author(s)', Member::get()->exclude("Email", "")->map("ID", "Email")->toArray()));
+			$fields->push(new DropdownField('ParentID','Move to', ProductGroup::get()->map()->toArray()));
 			$fields->push(new CheckboxField('ShowInMenus','Show in menus (unticking both boxes here will hide the module)'));
 			$fields->push(new CheckboxField('ShowInSearch','Show in search (unticking both boxes here will hide the module)'));
 
@@ -101,7 +103,7 @@ class AddingModuleProduct_Form extends Form  {
 				//$controller, $name, $sourceClass, $fieldList = null, $detailFormFields = null, $sourceFilter = "", $sourceSort = "", $sourceJoin = ""
 			}
 		}
-		$actions = new FieldSet(new FormAction("submit", "submit"));
+		$actions = new FieldList(new FormAction("submit", "submit"));
 		$validator = new AddingModuleProduct_RequiredFields($moduleProductID, array('Code', 'Name', 'ParentID', 'MainURL'));
 		parent::__construct($controller, $name, $fields, $actions, $validator);
 		if($moduleProduct) {
@@ -112,16 +114,16 @@ class AddingModuleProduct_Form extends Form  {
 
 	function submit($data, $form) {
 
-		$member = Member::currentMember();
+		$member = Member::currentUser();
 		if(!$member) {
 			$form->setMessage("You need to be logged in to edit this module.", "bad");
-			Director::redirectBack();
+			$this->redirectBack();
 			return;
 		}
 		$data = Convert::raw2sql($data);
 		$page = null;
 		if(isset($data["ModuleProductID"])) {
-			$page = DataObject::get_by_id("ModuleProduct", intval($data["ModuleProductID"]));
+			$page = ModuleProduct::get()->byID(intval($data["ModuleProductID"]));
 		}
 		if(!$page) {
 			$page = new ModuleProduct();
@@ -130,12 +132,12 @@ class AddingModuleProduct_Form extends Form  {
 			$oldParentID = $page->ParentID;
 		}
 		$form->saveInto($page);
-		$page->MetaTitle = $data["Title"];
+		$page->Title = $data["Title"];
 		$page->MenuTitle = $data["Title"];
-		if(!$member->IsAdmin()) {
+		if(!$member->inGroup("ADMIN")) {
 			$page->ShowInMenus = 0;
 			$page->ShowInMenus = 0;
-			$parentPage = DataObject::get_one("AddingModuleProduct");
+			$parentPage = AddingModuleProduct::get()->First();
 			if($parentPage) {
 				$page->ParentID = $parentPage->ID;
 			}
@@ -155,7 +157,9 @@ class AddingModuleProduct_Form extends Form  {
 			if(is_array($extraTagsArray) && count($extraTagsArray)) {
 				foreach($extraTagsArray as $tag) {
 					$tag = trim($tag);
-					$obj = DataObject::get_one("EcommerceProductTag", "\"Title\" = '$tag'");
+					$obj = EcommerceProductTag::get()
+						->filter(array("Title" => $tag))
+						->first();
 					if(!$obj) {
 						$obj = new EcommerceProductTag();
 						$obj->Title = $tag;
@@ -173,13 +177,13 @@ class AddingModuleProduct_Form extends Form  {
 			return $page->renderWith("ModuleProductInner");
 		}
 		else {
-			Director::redirect($page->Link());
+			$this->redirect($page->Link());
 		}
 	}
 
 
 	protected function ManyManyComplexTableFieldAuthorsField($controller, $authorsIDArray) {
-		$detailFields = new FieldSet();
+		$detailFields = new FieldList();
 		$detailFields->push(new TextField("ScreenName"));
 		$detailFields->push(new TextField("FirstName"));
 		$detailFields->push(new TextField("Surname"));
@@ -195,10 +199,11 @@ class AddingModuleProduct_Form extends Form  {
 		$detailFields->push(new NumericField("Rate15Mins", "Indicative rate for 15 minute skype chat"));
 		$detailFields->push(new NumericField("Rate120Mins", "Indicative rate for two hour work slot"));
 		$detailFields->push(new NumericField("Rate480Mins", "Indicative rate for one day of work"));
-		$field = new ManyManyComplexTableField(
-			$controller, //controller
+		$field = new GridField(
 			'Authors', //name
 			'Member', //sourceClass
+			'Member', //sourceClass
+			/*
 			array(
 				"ScreenName" => "Screen name",
 				"FirstName" => "First name",
@@ -209,6 +214,7 @@ class AddingModuleProduct_Form extends Form  {
 			"\"Member\".\"ID\" IN (".implode(",", $authorsIDArray).")",//sourceFilter
 			"",//sourceSort
 			null//sourceJoin
+			*/
 		);
 		$field->setPopupCaption("Edit Author");
 		$field->setAddTitle("Author");
@@ -267,7 +273,11 @@ class AddingModuleProduct_RequiredFields extends RequiredFields {
 			if(Versioned::current_stage() == "Live") {
 				$extension = "_Live";
 			}
-			if(DataObject::get_one("ModuleProduct", "\"Code\" = '$type' AND ModuleProduct{$extension}.ID <>".($this->currentID - 0))) {
+			if(ModuleProduct::get()
+				->filter(array("Code" => $type))
+				->exclude("ModuleProduct", $this->currentID - 0)
+				->count()
+			) {
 				$errorMessage = sprintf(_t('Form.CODEALREADYINUSE', "Your code %s is already in use - please check if your code is listed already or use an alternative code."), $type);
 				$this->validationError(
 					$fieldName = "Code",

@@ -10,24 +10,24 @@
 
 class ModuleProductEmail extends DataObject {
 
-	public static $icon = "ecommerce_software/images/treeicons/ModuleProduct";
+	private static $icon = "ecommerce_software/images/treeicons/ModuleProduct";
 
-	public static $db = array(
+	private static $db = array(
 		"Subject" => "Varchar",
 		"Body" => "HTMLText",
 		"To" => "Varchar(255)",
 		"Sent" => "Boolean"
 	);
 
-	public static $has_one = array(
+	private static $has_one = array(
 		"ModuleProduct" => "ModuleProduct",
 		"Member" => "Member"
 	);
 
-	public static $singular_name = "Module Email";
+	private static $singular_name = "Module Email";
 		function i18n_singular_name() { return _t("ModuleProductEmail.MODULEPRODUCTEMAIL", "Module Email");}
 
-	public static $plural_name = "Module Emails";
+	private static $plural_name = "Module Emails";
 		function i18n_plural_name() { return _t("ModuleProductEmail.MODULEPRODUCTEMAILS", "Module Emails");}
 
 	function canDelete($member = null) {
@@ -62,13 +62,13 @@ class ModuleProductEmail_Form extends Form  {
 
 	function __construct($controller, $name, $moduleProduct) {
 		$defaults = $moduleProduct->EmailDefaults();
-		$fields = new FieldSet();
+		$fields = new FieldList();
 		$fields->push(new TextField('To','To', $defaults->To));
 		$fields->push(new TextField('Subject','Subject', $defaults->Subject));
 		$fields->push(new HiddenField('ModuleProductID','ModuleProductID', $moduleProduct->ID));
 		$fields->push(new HiddenField('MemberID','memberID', $moduleProduct->DefaultMemberID()));
-		$fields->push(new HTMLEditorField('Body','Body', $defaults->Body));
-		$actions = new FieldSet(new FormAction("submit", "submit"));
+		$fields->push(new HtmlEditorField('Body','Body', $defaults->Body));
+		$actions = new FieldList(new FormAction("submit", "submit"));
 		$validator = new ModuleProductEmail_RequiredFields(array("Subject"));
 		parent::__construct($controller, $name, $fields, $actions, $validator);
 		$this->loadDataFrom($moduleProduct->emailDefaults());
@@ -76,21 +76,19 @@ class ModuleProductEmail_Form extends Form  {
 	}
 
 	function submit($data, $form) {
-		$member = Member::currentMember();
-		if(!$member || !$member->IsAdmin()) {
+		$member = Member::currentUser();
+		if(!$member || !$member->inGroup("ADMIN")) {
 			$form->setMessage("You need to be logged as an admin to send this email.", "bad");
-			Director::redirectBack();
-			return;
+			return Controller::curr()->redirectBack();
 		}
 		$data = Convert::raw2sql($data);
 		$page = null;
 		if(isset($data["ModuleProductID"])) {
-			$page = DataObject::get_by_id("ModuleProduct", intval($data["ModuleProductID"]));
+			$page = ModuleProduct::get()->byID(intval($data["ModuleProductID"]));
 		}
 		if(!$page) {
 			$form->setMessage("Can not find the right page for saving this email.", "bad");
-			Director::redirectBack();
-			return;
+			return Controller::curr()->redirectBack();
 		}
 		$email = new ModuleProductEmail();
 		$form->saveInto($email);
@@ -99,7 +97,7 @@ class ModuleProductEmail_Form extends Form  {
 			return "mail sent!";
 		}
 		else {
-			Director::redirect($page->Link());
+			return Controller::curr()->redirect($page->Link());
 		}
 	}
 }

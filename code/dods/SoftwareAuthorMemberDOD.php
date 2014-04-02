@@ -7,50 +7,48 @@
  *
  **/
 
-class SoftwareAuthorMemberDOD extends DataObjectDecorator {
+class SoftwareAuthorMemberDOD extends DataExtension {
 
-	protected static $register_group_title = "Software Authors";
+	private static $register_group_title = "Software Authors";
 		function set_register_group_title($s) {self::$register_group_title = $s;}
 		function get_register_group_title() {return self::$register_group_title;}
 
-	protected static $register_group_code = "softwareauthors";
+	private static $register_group_code = "softwareauthors";
 		function set_register_group_code($s) {self::$register_group_code = $s;}
 		function get_register_group_code() {return self::$register_group_code;}
 
-	protected static $register_group_access_key = "SOFTWAREAUTHORS";
+	private static $register_group_access_key = "SOFTWAREAUTHORS";
 		function set_register_group_access_key($s) {self::$register_group_access_key = $s;}
 		function get_register_group_access_key() {return self::$register_group_access_key;}
 
-	function extraStatics () {
-		return array(
-			"db" => array(
-				"ScreenName" => "Varchar(255)",
-				"GithubURL" => "Varchar(255)",
-				"SilverstripeDotOrgURL" => "Varchar(255)",
-				"CompanyName" => "Varchar(255)",
-				"CompanyURL" => "Varchar(255)",
-				"AreYouHappyForPeopleToContactYou" => "Boolean",
-				"ContactDetailURL" => "Varchar(255)",
-				"OtherURL" => "Varchar(255)",
-				"AreYouAvailableForPaidSupport" => "Boolean",
-				"Rate15Mins" => "Currency",
-				"Rate120Mins" => "Currency",
-				"Rate480Mins" => "Currency"
-			),
-			"belongs_many_many" => array(
-				"ModuleProducts" => "ModuleProduct"
-			),
-			"defaults" => array(
-				"Rate15Mins" => 0,
-				"Rate120Mins" => 0,
-				"Rate480Mins" => 0
-			),
-			'api_access' => array(
-				"view" =>
-					array("ModuleProducts", "ScreenName")
-				)
-		);
-	}
+	private static $db = array(
+		"ScreenName" => "Varchar(255)",
+		"GithubURL" => "Varchar(255)",
+		"SilverstripeDotOrgURL" => "Varchar(255)",
+		"CompanyName" => "Varchar(255)",
+		"CompanyURL" => "Varchar(255)",
+		"AreYouHappyForPeopleToContactYou" => "Boolean",
+		"ContactDetailURL" => "Varchar(255)",
+		"OtherURL" => "Varchar(255)",
+		"AreYouAvailableForPaidSupport" => "Boolean",
+		"Rate15Mins" => "Currency",
+		"Rate120Mins" => "Currency",
+		"Rate480Mins" => "Currency"
+	);
+
+	private static $belongs_many_many = array(
+		"ModuleProducts" => "ModuleProduct"
+	);
+
+	private static $defaults= array(
+		"Rate15Mins" => 0,
+		"Rate120Mins" => 0,
+		"Rate480Mins" => 0
+	);
+
+	private static $api_acces = array(
+		"view" => array("ModuleProducts", "ScreenName")
+	);
 
 	/**
 	 * Returns the currency used on the site.
@@ -100,7 +98,13 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 		$i = 0;
 		$startScreenName = $this->owner->ScreenName;
 		$this->owner->ScreenName = ereg_replace("[^A-Za-z0-9]", "", $this->owner->ScreenName);
-		while(DataObject::get_one($this->owner->ClassName, "\"ScreenName\" = '".$this->owner->ScreenName."' AND \"".$this->owner->ClassName."\".\"ID\" <> ".$id) && $i < 10) {
+		$className = $this->owner->ClassName;
+		while($className::get()
+			->filter(array("ScreenName" => $this->owner->ScreenName))
+			->exclude(array("ID" => $id ))
+			->first()
+			&& $i < 10
+		) {
 			$i++;
 			$this->ScreenName = $startScreenName."_".$i;
 		}
@@ -108,7 +112,9 @@ class SoftwareAuthorMemberDOD extends DataObjectDecorator {
 	}
 
 	function ListOfModulesLink(){
-		$page = DataObject::get_one("ModuleProductGroup", "\"LevelOfProductsToShow\" = -1");
+		$page = ModuleProductGroup::get()
+			->filter(array("LevelOfProductsToShow" => 1))
+			->first();
 		if($page) {
 			return $page->Link()."#author_".$this->owner->ScreenName;
 		}

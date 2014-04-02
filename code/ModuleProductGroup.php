@@ -13,19 +13,19 @@ class ModuleProductGroup extends ProductGroupWithTags {
 	/**
 	 * Standard SS variable.
 	 */
-	public static $singular_name = "Module";
+	private static $singular_name = "Module";
 		function i18n_singular_name() { return _t("ProductGroup.MODULEPRODUCTGROUP", "Module");}
 
 	/**
 	 * Standard SS variable.
 	 */
-	public static $plural_name = "Modules";
+	private static $plural_name = "Modules";
 		function i18n_plural_name() { return _t("ProductGroup.MODULEPRODUCTGROUPS", "Modules");}
 
 
-	public static $default_child = 'ModuleProduct';
+	private static $default_child = 'ModuleProduct';
 
-	public static $icon = "ecommerce_software/images/treeicons/ModuleProductGroup";
+	private static $icon = "ecommerce_software/images/treeicons/ModuleProductGroup";
 
 
 	/**
@@ -63,19 +63,17 @@ class ModuleProductGroup extends ProductGroupWithTags {
 				//do nothing
 			}
 			elseif($tagOrTags instanceOf DataObject) {
-				$tags = new DataObjectSet(array($tagOrTags));
+				$tags = new ArrayList(array($tagOrTags));
 			}
-			elseif(is_array($tagOrTags)) {
-				$tags = DataObject::get("EcommerceProductTag", "\"EcommerceProductTag\".\"ID\" IN(".implode(",", $tagOrTags).")");
-			}
-			elseif(intval($tagOrTags) == $tagOrTags) {
-				$tags = DataObject::get("EcommerceProductTag", "\"EcommerceProductTag\".\"ID\" IN(".$tagOrTags.")");
+			elseif(is_array($tagOrTags) || intval($tagOrTags) == $tagOrTags) {
+				$tags = EcommerceProductTag::get()
+					->filter(array("ID" => $tagOrTags));
 			}
 			else {
 				user_error("Error in tags", E_USER_NOTICE);
 			}
 			$idArray = array();
-			if($tags) {
+			if($tags->count()) {
 				$stage = '';
 				if(Versioned::current_stage() == "Live") {
 					$stage = "_Live";
@@ -156,8 +154,9 @@ class ModuleProductGroup extends ProductGroupWithTags {
 			}
 		}
 		if(count($idArray)) {
-			$tags = DataObject::get("EcommerceProductTag", "EcommerceProductTag.ID IN(".implode(",", $idArray).")");
-			if($tags) {
+			$tags = EcommerceProductTag::get()
+				->filter(array("ID" => $idArray));
+			if($tags->count()) {
 				foreach($tags as $tag) {
 					$tag->Link = $this->Link("show")."/".$tag->Code."/";
 					if($tag->Code == $tagCode) {
@@ -225,10 +224,10 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 			$searchText = $this->request->getVar('Search');
 		}
 
-		$fields = new FieldSet(
+		$fields = new FieldList(
 			new TextField('Search', _t('ModuleProductGroup.KEYWORDS', 'keywords'), $searchText)
 		);
-		$actions = new FieldSet(
+		$actions = new FieldList(
 			new FormAction('modulesearchformresults',  _t('ModuleSearchForm.FILTER', 'Filter'))
 		);
 		$form = new SearchForm($this, 'ModuleSearchForm', $fields, $actions);
@@ -259,23 +258,23 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 			}
 		}
 		else {
-			$data["Results"] = new DataObjectSet();
+			$data["Results"] = new ArrayList();
 		}
 		$search = Convert::raw2sql($data["Query"]);
 		if(strlen($search) > 2) {
-			$additionalProducts = DataObject::get("ModuleProduct", "\"Code\" LIKE '%$search%' OR \"MenuTitle\" LIKE '%$search%'");
+			$additionalProducts = ModuleProduct::get()->filterAny(array("Code:PartialMatch" => $search, "MenuTitle:PartialMatch" => $search));
 			if($additionalProducts) {
 				foreach($additionalProducts as $moduleProduct) {
 					$data["Results"]->push($moduleProduct);
 				}
 			}
-			$tags = DataObject::get("EcommerceProductTag", "\"Title\" LIKE '%$search%' OR \"Synonyms\" LIKE '%$search%' OR \"Explanation\" LIKE '%$search%' ");
-			if($tags) {
+			$tags = EcommerceProductTag::get()->filterAny(array("Title:PartialMatch" => $search, "Synonyms:PartialMatch" => $search, "Explanation:PartialMatch" => $search));
+			if($tags->count()) {
 				foreach($tags as $tag) {
 					$rows = DB::query("SELECT ProductID FROM EcommerceProductTag_Products WHERE EcommerceProductTagID = ".$tag->ID);
 					if($rows) {
 						foreach($rows as $row) {
-							$item = DataObject::get_by_id("ModuleProduct", $row["ProductID"]);
+							$item = ModuleProduct::get()->byID($row["ProductID"]);
 							if($item) {
 								$data["Results"]->push($item);
 							}
@@ -283,13 +282,13 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 					}
 				}
 			}
-			$authors = DataObject::get("Member", "\"ScreenName\" LIKE '%$search%' OR \"FirstName\" LIKE '%$search%' OR \"Surname\" LIKE '%$search%'");
-			if($authors) {
+			$authors = Member::get()->filterAny(array("ScreenName:PartialMatch" => $search, "FirstName:PartialMatch" => $search, "Surname:PartialMatch" => $search));*
+			if($authors->count()) {
 				foreach($authors as $author) {
 					$rows = DB::query("SELECT \"ModuleProductID\" FROM \"ModuleProduct_Authors\" WHERE \"MemberID\" = ".$author->ID);
 					if($rows) {
 						foreach($rows as $row) {
-							$item = DataObject::get_by_id("ModuleProduct", $row["ModuleProductID"]);
+							$item = ModuleProduct::get()->byID( $row["ModuleProductID"]);
 							if($item) {
 								$data["Results"]->push($item);
 							}
@@ -314,10 +313,11 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 	 */
 	function introemails(){
 		$i = 0;
-		$member = Member::currentMember();
-		$dos = new DataObjectSet();
-		if($member && $member->IsAdmin()) {
-			$modules = DataObject::get("ModuleProduct", "\"ShowInSearch\" = 1 AND \"ShowInMenus\" = 1");
+		$member = Member::currentUser();
+		$dos = new ArrayList();
+		if($member && $member->inGroup("ADMIN")) {
+			$modules = ModuleProduct::get()
+				->filter(array("ShowInSearch" => 1, "ShowInMenus" => 1));
 			foreach($modules as $module) {
 				if(!$module->HasEmail() && !$module->HasMemberContact()) {
 					$i++;

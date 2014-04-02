@@ -19,7 +19,7 @@
 
 <h3  class="moduleH3">Author(s)</h3>
 <ul id="AuthorList"  class="moduleList">
-<% control Authors %><% if IsAdmin %><% else %>
+<% with/loop Authors %><% if IsAdmin %><% else %>
 	<li class="infoItem $FirstLast">
 		<strong>
 			<% if ListOfModulesLink %><a href="$ListOfModulesLink"><% end_if %><% if ScreenName %>$ScreenName<% else %>$FirstName<% end_if %><% if ListOfModulesLink %></a><% end_if %>
@@ -51,7 +51,7 @@
 		</ul>
 	</li>
 	<% end_if %>
-<% end_control %>
+<% end_with/loop %>
 </ul>
 
 <h3  class="moduleH3">Links</h3>

@@ -3,7 +3,7 @@
 	"type": "silverstripe-module",
 	"description": "Software as a product; sell software packages using e-commerce",
 	"homepage": "http://www.silverstripe-ecommerce.com",
-	"keywords": ["ecommerce", "e-commerce", "shop", "silverstripe"],
+	"keywords": ["ecommerce", "e-commerce", "shop", "silverstripe", "software", "modules", "themes", "download"],
 	"license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
 	"authors":[
 		{
@@ -14,8 +14,9 @@
 		}
 	],
 	"require":{
-		"php": ">=5.3.2",
-		"silverstripe/framework": "~2.4",
-		"sunnysideup/ecommerce": "~2.4"
+		"silverstripe/ecommerce": "dev-master"
+	},
+	"extra": {
+		"installer-name": "ecommerce_software"
 	}
 }
