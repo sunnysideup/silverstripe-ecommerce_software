@@ -50,24 +50,24 @@ class ModuleProductGroup extends ProductGroupWithTags {
 	 * @param boolean $recursive
 	 * @return DataObjectSet | Null
 	 **/
-	protected function currentInitialProducts($tagOrTags){
+	protected function currentInitialProducts($extraFilter = ''){
 		$products = null;
 		// STANDARD FILTER
 		$filter = $this->getStandardFilter(); //
 		$filter .= " AND ".$this->getGroupFilter();
 		//work out current tags
 		$tags = null;
-		if($tagOrTags) {
-			if($tagOrTags instanceOf DataObjectSet) {
-				$tags = $tagOrTags;
+		if($extraFilter) {
+			if($extraFilter instanceOf DataObjectSet) {
+				$tags = $extraFilter;
 				//do nothing
 			}
-			elseif($tagOrTags instanceOf DataObject) {
-				$tags = new ArrayList(array($tagOrTags));
+			elseif($extraFilter instanceOf DataObject) {
+				$tags = new ArrayList(array($extraFilter));
 			}
-			elseif(is_array($tagOrTags) || intval($tagOrTags) == $tagOrTags) {
+			elseif(is_array($extraFilter) || intval($extraFilter) == $extraFilter) {
 				$tags = EcommerceProductTag::get()
-					->filter(array("ID" => $tagOrTags));
+					->filter(array("ID" => $extraFilter));
 			}
 			else {
 				user_error("Error in tags", E_USER_NOTICE);
@@ -282,7 +282,13 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 					}
 				}
 			}
-			$authors = Member::get()->filterAny(array("ScreenName:PartialMatch" => $search, "FirstName:PartialMatch" => $search, "Surname:PartialMatch" => $search));*
+			$authors = Member::get()
+				->filterAny(
+					array(
+						"ScreenName:PartialMatch" => $search,
+						"FirstName:PartialMatch" => $search,
+						"Surname:PartialMatch" => $search)
+				);
 			if($authors->count()) {
 				foreach($authors as $author) {
 					$rows = DB::query("SELECT \"ModuleProductID\" FROM \"ModuleProduct_Authors\" WHERE \"MemberID\" = ".$author->ID);

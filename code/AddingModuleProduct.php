@@ -57,9 +57,9 @@ class AddingModuleProduct_Form extends Form  {
 		$fields->push(new TextField('Code','Code (folder name)'));
 		$moduleProductGroups = ModuleProductGroup::get()
 			->filter(array("ParentID:GreaterThan" => 0));
-		if($moduleProductGroups->count()) {
-			$types = array("" => " --- please select ---";
-			$types += $moduleProductGroups->map($index = 'ID', $titleField = 'MenuTitle'))->toArray(); ;
+		if(ModuleProductGroup::get()->count()) {
+			$types = array("" => " --- please select ---");
+			$types += ModuleProductGroup::get()->map($index = 'ID', $titleField = 'MenuTitle')->toArray();
 		}
 		else {
 			$types = array();
@@ -200,9 +200,10 @@ class AddingModuleProduct_Form extends Form  {
 		$detailFields->push(new NumericField("Rate120Mins", "Indicative rate for two hour work slot"));
 		$detailFields->push(new NumericField("Rate480Mins", "Indicative rate for one day of work"));
 		$field = new GridField(
-			'Authors', //name
-			'Member', //sourceClass
-			'Member', //sourceClass
+			'Authors',
+			'Member',
+			Member::get()
+		);
 			/*
 			array(
 				"ScreenName" => "Screen name",
@@ -215,7 +216,6 @@ class AddingModuleProduct_Form extends Form  {
 			"",//sourceSort
 			null//sourceJoin
 			*/
-		);
 		$field->setPopupCaption("Edit Author");
 		$field->setAddTitle("Author");
 		return $field;
