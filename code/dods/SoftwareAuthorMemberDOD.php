@@ -55,7 +55,7 @@ class SoftwareAuthorMemberDOD extends DataExtension {
 	 * @return String
 	 */
 	function Currency() {
-		$currency = Payment::site_currency();
+		$currency = EcommercePayment::site_currency();
 		return $currency;
 	}
 
@@ -97,7 +97,7 @@ class SoftwareAuthorMemberDOD extends DataExtension {
 		}
 		$i = 0;
 		$startScreenName = $this->owner->ScreenName;
-		$this->owner->ScreenName = ereg_replace("[^A-Za-z0-9]", "", $this->owner->ScreenName);
+		$this->owner->ScreenName = preg_replace("[^A-Za-z0-9]", "", $this->owner->ScreenName);
 		$className = $this->owner->ClassName;
 		while($className::get()
 			->filter(array("ScreenName" => $this->owner->ScreenName))

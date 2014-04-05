@@ -71,9 +71,8 @@ class ImportModulesTask extends BuildTask{
 	}
 
 	private function createAuthorGroup(){
-
 		if(!$group = Group::get()
-			->filter(array("Code" => .SoftwareAuthorMemberDOD::get_register_group_code())
+			->filter(array("Code" => Config::inst()->get("SoftwareAuthorMemberDOD", "register_group_code")))
 			->first()
 		) {
 			$group = new Group();

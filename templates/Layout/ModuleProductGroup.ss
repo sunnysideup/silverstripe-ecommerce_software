@@ -6,24 +6,27 @@
 <% if Products %>
 	<div id="Products" class="category">
 		<div class="resultsBar">
-			<% if SortLinks %><span class="sortOptions"><% _t('ProductGroup.SORTBY','Sort by') %> <% with/loop SortLinks %><a href="$Link" class="sortlink $Current">$Name</a> <% end_with/loop %></span><% end_if %>
+			<% if SortLinks %><span class="sortOptions"><% _t('ProductGroup.SORTBY','Sort by') %>
+			<% loop SortLinks %><a href="$Link" class="sortlink $Current">$Name</a> <% end_loop %></span><% end_if %>
 		</div>
 		<ul class="productList">
-			<% with/loop Products %>
-			<li class="<% if Authors %> <% with/loop Authors %> author_$ScreenName <% end_with/loop %><% end_if %><% if EcommerceProductTags %> <% with/loop EcommerceProductTags %> filter_$Code <% end_with/loop %><% end_if %>" id="ModuleProductID{$ID}">
+			<% loop Products %>
+			<li class="<% if Authors %> <% loop Authors %> author_$ScreenName <% end_loop %><% end_if %>
+			<% if EcommerceProductTags %> <% loop EcommerceProductTags %> filter_$Code <% end_loop %><% end_if %>" id="ModuleProductID{$ID}">
 				<a href="$Link" class="moreInfoLink" rel="Explanation$ID" title="code: $Code.ATT">$Title</a>
 				<% if EcommerceProductTags %><span class="tags">
 					<span class="tagHeading listItemHeading" title="Tag(s)">Tag(s)</span>
-					<% with/loop EcommerceProductTags %><a href="$Link" rel="filter_$Code">$Title</a><% if Last %>.<% else %>, <% end_if %><% end_with/loop %>
+					<% loop EcommerceProductTags %><a href="$Link" rel="filter_$Code">$Title</a><% if Last %>.<% else %>, <% end_if %><% end_loop %>
 				</span><% end_if %>
 				<% if Authors %><span class="authors tags">
-					<span class="authorHeading listItemHeading" title="Author(s)">Author:</span> <% with/loop Authors %><a href="#" rel="author_$ScreenName">$ScreenName</a><% if Last %>.<% else %>, <% end_if %><% end_with/loop %>
+					<span class="authorHeading listItemHeading" title="Author(s)">Author:</span>
+					<% loop Authors %><a href="#" rel="author_$ScreenName">$ScreenName</a><% if Last %>.<% else %>, <% end_if %><% end_loop %>
 				</span><% end_if %>
 				<div class="explanation" id="Explanation$ID">
 					<p class="shortIntro">$MetaDescription</p>
 				</div>
 			</li>
-			<% end_with/loop %>
+			<% end_loop %>
 		</ul>
 		<div class="clear"><!-- --></div>
 	</div>

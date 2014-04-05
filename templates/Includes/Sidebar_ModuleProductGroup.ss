@@ -3,9 +3,9 @@
 	<h3>Tags</h3>
 	<ul>
 		<li class="First showAll"><a href="$Link" rel="">show all</a></li>
-		<% with/loop Tags %><li class="$Last $LinkingMode">
+		<% loop Tags %><li class="$Last $LinkingMode">
 		<% include EcommerceProductTagItem %>
-		</li><% end_with/loop %>
+		</li><% end_loop %>
 	</ul>
 
 </div>

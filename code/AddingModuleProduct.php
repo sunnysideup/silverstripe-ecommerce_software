@@ -97,7 +97,7 @@ class AddingModuleProduct_Form extends Form  {
 		}
 		if($moduleProduct && $moduleProduct->canEdit()) {
 			if($authors = $moduleProduct->Authors()) {
-				$authorsIDArray = $authors->map("ID","ID");
+				$authorsIDArray = $authors->map("ID","ID")->toArray();
 				$authorsIDArray[0] = 0;
 				$fields->push($this->ManyManyComplexTableFieldAuthorsField($controller, $authorsIDArray));
 				//$controller, $name, $sourceClass, $fieldList = null, $detailFormFields = null, $sourceFilter = "", $sourceSort = "", $sourceJoin = ""
@@ -216,8 +216,8 @@ class AddingModuleProduct_Form extends Form  {
 			"",//sourceSort
 			null//sourceJoin
 			*/
-		$field->setPopupCaption("Edit Author");
-		$field->setAddTitle("Author");
+		//$field->setPopupCaption("Edit Author");
+		//$field->setAddTitle("Author");
 		return $field;
 	}
 

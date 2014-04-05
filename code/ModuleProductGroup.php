@@ -51,12 +51,7 @@ class ModuleProductGroup extends ProductGroupWithTags {
 	 * @return DataObjectSet | Null
 	 **/
 	protected function currentInitialProducts($extraFilter = ''){
-		$products = null;
-		// STANDARD FILTER
-		$filter = $this->getStandardFilter(); //
-		$filter .= " AND ".$this->getGroupFilter();
-		//work out current tags
-		$tags = null;
+		$this->allProducts = parent::currentInitialProducts();
 		if($extraFilter) {
 			if($extraFilter instanceOf DataObjectSet) {
 				$tags = $extraFilter;
@@ -94,19 +89,12 @@ class ModuleProductGroup extends ProductGroupWithTags {
 						}
 					}
 					if(count($idArray)) {
-						$products = DataObject::get($this->getClassNameSQL(), "\"".$this->getClassNameSQL()."{$stage}\".\"ID\" IN(".implode(",", $idArray).") AND $filter", null, $this->getGroupJoin());
+						$this->allProducts = $this->allProducts->filter(array("ID" => $idArray));
 					}
 				}
 			}
 		}
-		if(!$products) {
-			$products = DataObject::get($this->getClassNameSQL(), $filter, null, $this->getGroupJoin(), $this->currentLimitSQL());
-		}
-		if($products) {
-			$this->totalCount = $products->count();
-			return $products;
-		}
-
+		return $this->allProducts;
 	}
 
 	/**
@@ -180,7 +168,7 @@ class ModuleProductGroup_Controller extends ProductGroupWithTags_Controller {
 	function init(){
 		parent::init();
 		Requirements::javascript("ecommerce_software/javascript/ModuleProductGroup.js");
-		Requirements::themedCSS("ModuleProduct");
+		Requirements::themedCSS("ModuleProduct", "ecommerce_software");
 	}
 
 

@@ -260,7 +260,7 @@ class ModuleProduct_Controller extends Product_Controller {
 		Requirements::javascript(THIRDPARTY_DIR."/jquery-form/jquery.form.js");
 		Requirements::javascript("ecommerce_software/javascript/Markdown.Converter.js");
 		Requirements::javascript("ecommerce_software/javascript/ModuleProduct.js");
-		Requirements::themedCSS("ModuleProduct");
+		Requirements::themedCSS("ModuleProduct", "ecommerce_software");
 	}
 
 	function Form () {
