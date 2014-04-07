@@ -1,7 +1,5 @@
-###############################################
 Silverstripe Stripe Open Source
-Proof of concept
-###############################################
+================================================================================
 
 Developer
 -----------------------------------------------
@@ -9,7 +7,7 @@ Nicolaas Francken [at] sunnysideup.co.nz
 
 Requirements
 -----------------------------------------------
-SilverStripe 2.4+
+see composer.jsong
 ecommerce
 ecommerce_product_tags
 
