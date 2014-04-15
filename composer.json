@@ -14,7 +14,7 @@
 		}
 	],
 	"require":{
-		"silverstripe/ecommerce": "dev-master"
+		"sunnysideup/ecommerce": "dev-master"
 	},
 	"extra": {
 		"installer-name": "ecommerce_software"
