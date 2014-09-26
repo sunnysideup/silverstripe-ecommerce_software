@@ -50,8 +50,8 @@ class ModuleProductGroup extends ProductGroupWithTags {
 	 * @param boolean $recursive
 	 * @return DataObjectSet | Null
 	 **/
-	protected function currentInitialProducts($extraFilter = ''){
-		$this->allProducts = parent::currentInitialProducts();
+	public function currentInitialProducts($extraFilter = null, $alternativeFilterKey = ''){
+		$this->allProducts = parent::currentInitialProducts($extraFilter, $alternativeFilterKey);
 		if($extraFilter) {
 			if($extraFilter instanceOf DataObjectSet) {
 				$tags = $extraFilter;
