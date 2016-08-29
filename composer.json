@@ -1,22 +1,31 @@
 {
-	"name": "sunnysideup/ecommerce_software",
-	"type": "silverstripe-module",
-	"description": "Software as a product; sell software packages using e-commerce",
-	"homepage": "http://www.silverstripe-ecommerce.com",
-	"keywords": ["ecommerce", "e-commerce", "shop", "silverstripe", "software", "modules", "themes", "download", "developers", "software as a service"],
-	"license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
-	"authors":[
-		{
-			"name": "Nicolaas Francken",
-			"homepage": "https://github.com/sunnysideup",
-			"email" : "modules@sunnysideup.co.nz",
-			"role" : "lead developer"
-		}
-	],
-	"require":{
-		"sunnysideup/ecommerce": "dev-master"
-	},
-	"extra": {
-		"installer-name": "ecommerce_software"
-	}
+    "name": "sunnysideup/ecommerce_software",
+    "type": "silverstripe-module",
+    "description": "Software as a product; sell software packages using e-commerce",
+    "keywords": [
+        "ecommerce",
+        "e-commerce",
+        "shop",
+        "silverstripe",
+        "software",
+        "modules",
+        "themes",
+        "download",
+        "developers",
+        "software as a service"
+    ],
+    "license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
+    "authors": [
+        {
+            "name": "Nicolaas Francken",
+            "email": "modules@sunnysideup.co.nz",
+            "role": "lead developer"
+        }
+    ],
+    "require": {
+        "sunnysideup/ecommerce": "dev-master"
+    },
+    "extra": {
+        "installer-name": "ecommerce_software"
+    }
 }
