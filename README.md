@@ -57,7 +57,7 @@ We recommend that you:
 
 
 
-We welcome any contributions. See [Browse the API](CONTRIBUTING.md) for more details.
+We welcome any contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 ## Paid assistance
 
