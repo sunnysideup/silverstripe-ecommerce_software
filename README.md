@@ -12,7 +12,8 @@
 ## Documentation
 
 
-
+ * [Developer Docs](docs/en/INDEX.md)
+ * [Developer Docs](docs/en/userguide.md)
 
 [Browse the API](docs/en/index.xhtml)
 
