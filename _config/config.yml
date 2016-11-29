@@ -1,7 +1,4 @@
 Member:
-  extensions:
-    - SoftwareAuthorMemberDOD
-
+    extensions: [SoftwareAuthorMemberDOD]
 EcommerceDatabaseAdmin:
-  extensions:
-    - ImportModulesTask_AdminDecorator
+    extensions: [ImportModulesTask_AdminDecorator]
