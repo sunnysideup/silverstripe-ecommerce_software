@@ -15,7 +15,7 @@
 
  * [Developer Docs](docs/en/INDEX.md)
  * [User Guide](docs/en/userguide.md)
- * [API](http://ssmods.com/apis/ecommerce_software/docs/en/api/)
+ [comment]: <> (* [API](http://ssmods.com/apis/ecommerce_software/docs/en/api/))
 
 ## Requirements
 
