@@ -3,10 +3,12 @@
     "type": "silverstripe-module",
     "description": "Software as a product; sell software packages using e-commerce",
     "keywords": [
+        "Silverstripe-CMS",
+        "CMS",
+        "Silverstripe",
         "ecommerce",
         "e-commerce",
         "shop",
-        "silverstripe",
         "software",
         "modules",
         "themes",
@@ -23,7 +25,9 @@
         }
     ],
     "require": {
-        "sunnysideup/ecommerce": "dev-master"
+        "sunnysideup/ecommerce": "*",
+        "silverstripe/framework": "~3.1",
+        "silverstripe/cms": "~3.1"
     },
     "extra": {
         "installer-name": "ecommerce_software"
