@@ -1,5 +1,5 @@
 <?php
-class Test extends SapphireTest
+class EcommerceSoftwareTest extends SapphireTest
 {
     protected $usesDatabase = false;
 
